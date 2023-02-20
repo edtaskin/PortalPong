@@ -6,27 +6,20 @@ from math import sin, cos
 class Ball(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        # self.pos = pygame.math.Vector2(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
         self.velocity = pygame.math.Vector2(MIN_BALL_SPEED * choice([-1,1]), MIN_BALL_SPEED * choice([-1,1]))
         self.speed = MIN_BALL_SPEED
-        # self.dir = pygame.math.Vector2((choice([-1,1]), 0))
-        self.surf = pygame.Surface((BALL_SIZE,BALL_SIZE))
-        self.surf.fill("White")
-        self.rect = self.surf.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
-    
+        # if custom_rect == None:
+        self.rect = pygame.Rect(SCREEN_WIDTH/2 - BALL_SIZE/2, SCREEN_HEIGHT/2 - BALL_SIZE/2, BALL_SIZE, BALL_SIZE)
+        # else: self.rect = custom_rect
+
     def reflect_ball(self):
         global player_win
         if self.rect.left <= 0:
             player_win = True
-            # self.velocity.x *= -1
         if self.rect.right >= SCREEN_WIDTH:
             player_win = False
-            # self.velocity.x *= -1
         if self.rect.top <= 0 or self.rect.bottom >= SCREEN_HEIGHT:
             self.velocity.y *= -1
-
-    # def reflect(self, normal_vector):
-    #     self.dir = self.dir.reflect(normal_vector)
     
     def update(self):
         self.reflect_ball()
@@ -67,7 +60,6 @@ class Player(Paddle):
     def update(self):
         self.player_input()
         self.rect.y += self.dir * self.speed
-        # self.rect.center = (round(self.rect.x), round(self.rect.y))
 
     def reset(self):
         self.dir = 0
@@ -77,8 +69,6 @@ class Computer(Paddle):
     def __init__(self):
         super().__init__()
         self.rect = self.surf.get_rect(center = (30, SCREEN_HEIGHT/2))
-        self.target_y = 0
-        # self.track_ball = False
 
     def move_towards_ball(self): # Func outside class?
         global ball
@@ -89,9 +79,8 @@ class Computer(Paddle):
             if self.rect.top >= 0:
                 self.dir = -1
         else: self.dir = 0
-        print(self.dir)
-        self.rect.y += self.dir * self.speed
-                
+        # print(self.dir)
+        self.rect.y += self.dir * self.speed            
 
     def update(self):
         self.move_towards_ball()
@@ -105,10 +94,11 @@ def set_title_screen():
 
 def set_game_screen(screen):
     screen.fill("Black")
-    screen.blit(ball.surf, ball.rect)
+    # screen.blit(ball.surf, ball.rect)
+    pygame.draw.ellipse(screen, "White", ball.rect)
     screen.blit(player.surf, player.rect)
     screen.blit(comp.surf, comp.rect)
-    # pygame.draw(screen, "Grey", middle_line) # TODO
+    pygame.draw.aaline(screen, "Grey", (SCREEN_WIDTH/2, 0), (SCREEN_WIDTH/2, SCREEN_HEIGHT))
     # screen.blit(top_surf, top_rect)
     # screen.blit(bottom_surf, bottom_rect)
 
@@ -116,15 +106,26 @@ def sprite_collision(ball_group, player_group):
     for ball in ball_group:
         for player in player_group:
             if player.rect.colliderect(ball.rect):
-                pos_from_paddle_center = player.rect.y - ball.rect.y
-                normalized_pos = pos_from_paddle_center/(PADDLE_HEIGHT/2)
-                bounce_angle = normalized_pos * MAX_BOUNCE_ANGLE
-                ball.speed = normalized_pos * MAX_BALL_SPEED 
-                if ball.speed < MIN_BALL_SPEED: ball.speed = MIN_BALL_SPEED
-                ball.velocity.x = ball.speed * cos(bounce_angle)
-                ball.velocity.y = ball.speed * sin(bounce_angle)
-                if player is Computer:
-                    player.target_y = 0
+                #TODO Köşeye geldiyse düz gelmiş gibi hesapla..
+                if player is Player and ball.rect.right >= player.rect.left:
+                    print("here1")
+                    ball.rect.x -= 1
+                elif player is Computer and ball.rect.left <= player.rect.right:
+                    print("here2")
+                    ball.rect.x += 1
+                ball.velocity.x *= -1
+                # pos_from_paddle_center = abs(player.rect.y - ball.rect.y)
+                # normalized_pos = pos_from_paddle_center/(PADDLE_HEIGHT/2)
+                # bounce_angle = round(normalized_pos * MAX_BOUNCE_ANGLE)
+                # ball.speed = (normalized_pos * MAX_BALL_SPEED) 
+                
+                # if ball.speed < MIN_BALL_SPEED: ball.speed = MIN_BALL_SPEED
+                # ball.velocity.x = round(ball.speed * cos(bounce_angle))
+                # ball.velocity.y = round(ball.speed * sin(bounce_angle))
+                # if player is Computer:
+                #     player.target_y = 0
+                
+                # print(f"Pos_from_center: {pos_from_paddle_center}, Normalized_pos: {normalized_pos}, ball_speed: {ball.speed}, x_velocity: {ball.velocity.x}")
 
 def game_over(ball):
     screen.fill("Black")
@@ -134,10 +135,22 @@ def game_over(ball):
     else:
         screen.blit(win_msg, win_msg_rect)
 
+def update_components():
+    # if game_active:
+    player.update()
+    comp.update()
+    ball.update()
+    # else:
+    #     # Instead game_over_msg_ball?
+    #     loss_msg_ball.update()
+    #     win_msg_ball.update()
 
-#TODO
-# def game_over_msg_animation(msg_rect):
-#     if msg_rect.top <= 0:
+def reset_components(ball, player):
+    global player_win
+    ball.reset()
+    player.reset()
+    comp.reset()
+    player_win = None
 
 
 pygame.init()
@@ -149,7 +162,7 @@ BALL_SIZE = 20
 MAX_BOUNCE_ANGLE = 75
 PADDLE_SPEED = 4
 MIN_BALL_SPEED = 6
-MAX_BALL_SPEED = 10
+MAX_BALL_SPEED = 9
 
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 clock = pygame.time.Clock()
@@ -161,7 +174,7 @@ game_active = False
 player_win = None
 start_time = 0
 
-middle_line = pygame.Rect(SCREEN_WIDTH/2-2, 0, 4, SCREEN_HEIGHT)
+# middle_line = pygame.Rect(SCREEN_WIDTH/2-2, 0, 4, SCREEN_HEIGHT)
 # Title screen
 # TODO Animation
 title = title_font.render("Pong", False, "White")
@@ -172,30 +185,13 @@ title_msg_rect = title_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT-100)
 
 loss_msg = msg_font.render("YOU LOSE", False, "Red")
 loss_msg_rect = loss_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
+# loss_msg_ball = Ball(loss_msg_rect)
 
 win_msg = msg_font.render("YOU WIN", False, "Green")
 win_msg_rect = win_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
+# win_msg_ball = Ball(win_msg_rect)
 
 # Game
-# top_surf = pygame.Surface((SCREEN_WIDTH, 10))
-# top_surf.fill("White")
-# top_rect = top_surf.get_rect(midbottom = (SCREEN_WIDTH/2,10))
-# bottom_surf = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT-10))
-# bottom_surf.fill("White")
-# bottom_rect = bottom_surf.get_rect(midtop = (SCREEN_WIDTH/2, SCREEN_HEIGHT-10))
-
-def update_components():
-    player.update()
-    comp.update()
-    ball.update()
-
-def reset_components(ball, player):
-    global player_win
-    ball.reset()
-    player.reset()
-    comp.reset()
-    player_win = None
-
 ball = Ball()
 player = Player()
 comp = Computer()
@@ -230,6 +226,7 @@ while True:
             reset_components(ball, player)
     else:
         set_title_screen()
+        # update_components()
 
     pygame.display.update()
     clock.tick(60)
