@@ -88,6 +88,12 @@ class Computer(Paddle):
     def reset(self):
         self.rect.center = (30, SCREEN_HEIGHT/2)
 
+# class Portal(pygame.sprite.Sprite):
+#     def __init__(self):
+#         super.__init__()
+#         self.color = choice(["blue", "red"])
+#         if self.color =
+
 def set_title_screen():
     screen.blit(title, title_rect)
     screen.blit(title_msg, title_msg_rect)
@@ -165,6 +171,7 @@ MIN_BALL_SPEED = 6
 MAX_BALL_SPEED = 9
 
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+pygame.display.set_caption("Pong")
 clock = pygame.time.Clock()
 
 title_font = pygame.font.Font("font\VT323-Regular.ttf", 80)
@@ -195,6 +202,12 @@ win_msg_rect = win_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
 ball = Ball()
 player = Player()
 comp = Computer()
+
+# Portal
+blue_portal_1 = pygame.image.load("graphics/blue_portal_1.png").convert_alpha()
+blue_portal_2 = pygame.image.load("graphics/blue_portal_2.png").convert_alpha()
+blue_portal_frames = [blue_portal_1, blue_portal_2]
+
 
 # Groups
 ball_sg = pygame.sprite.GroupSingle()
