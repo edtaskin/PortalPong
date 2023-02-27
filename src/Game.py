@@ -7,12 +7,13 @@ def set_title_screen():
     screen.blit(title, title_rect)
     screen.blit(title_msg, title_msg_rect)
 
-def set_game_screen(screen):
+def set_game_screen():
     screen.fill("Black")
     pygame.draw.ellipse(screen, "White", ball.rect)
     screen.blit(player.surf, player.rect)
     screen.blit(comp.surf, comp.rect)
-    pygame.draw.aaline(screen, "Grey", (SCREEN_WIDTH/2, 0), (SCREEN_WIDTH/2, SCREEN_HEIGHT))
+    pygame.draw.line(screen, "White", (SCREEN_WIDTH/2, SCORE_HEIGHT), (SCREEN_WIDTH/2, SCREEN_HEIGHT))
+    pygame.draw.line(screen, "White", (0,SCORE_HEIGHT), (SCREEN_WIDTH,SCORE_HEIGHT), 2)
 
 def sprite_collision(ball_group, player_group):
     for ball in ball_group:
@@ -20,29 +21,54 @@ def sprite_collision(ball_group, player_group):
             if player.rect.colliderect(ball.rect):
                 ball.velocity.x *= -1
 
-def check_game_over(ball):
-    global player_win
-    if ball.rect.x > SCREEN_WIDTH:
-        player_win = False
-        game_over()
-    elif ball.rect.x < 0:
-        player_win = True
-        game_over()
+def update_score(ball, comp, player):
+    # print(f"Current time: {pygame.time.get_ticks()}")
+    comp_score_msg = msg_font.render(str(comp.score), False, "Red")
+    screen.blit(comp_score_msg, comp_score_msg.get_rect(center = (25, SCORE_HEIGHT/2)))
+    player_score_msg = msg_font.render(str(player.score), False, "Green")
+    screen.blit(player_score_msg, player_score_msg.get_rect(center = (SCREEN_WIDTH-25, SCORE_HEIGHT/2)))
+    
+    if ball.rect.x >= SCREEN_WIDTH:
+        comp.score += 1
+    elif ball.rect.x <= 0:
+        player.score += 1
+    else:
+        if not ball.in_cooldown: return
 
-def game_over():
-    print("HERE")
+    if not ball.in_cooldown:
+        ball.rect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+        ball.velocity = pygame.math.Vector2(0,0)
+        ball.start_cooldown_time = pygame.time.get_ticks() #TODO Her seferinde 0 oluyor
+        ball.in_cooldown = True
+
+        print(f"time:{pygame.time.get_ticks()}, ball: {ball.start_cooldown_time}") 
+        check_game_over(comp, player) 
+
+    if ball.in_cooldown and pygame.time.get_ticks() - ball.start_cooldown_time >= BALL_RESET_COOLDOWN: # TODO clock.get_time niye olmuyor?
+        ball.reset()
+
+def check_game_over(comp, player):
+    print(f"comp_score={comp.score}, player_score={player.score}")
+    # global player_win
+    if comp.score == score_to_win: #TODO
+        # player_win = False
+        game_over(False)
+    elif player.score == score_to_win:
+        # player_win = True
+        game_over(True)
+
+def game_over(player_win):
     screen.fill("Black")
     set_title_screen()
-    if ball.rect.right >= SCREEN_WIDTH:
-        screen.blit(loss_msg, loss_msg_rect)
-    else:
-        screen.blit(win_msg, win_msg_rect)
+    if player_win: screen.blit(win_msg, win_msg_rect)
+    else: screen.blit(loss_msg, loss_msg_rect)
+    
     reset_components(ball_sg, player_g)
 
 def update_components(ball_g, player_g):
     global player_win
     for ball in ball_g:
-        ball.update(player_win)
+        ball.update()
     for player in player_g:
         player.update()
 
@@ -65,7 +91,7 @@ title_font = pygame.font.Font("font\VT323-Regular.ttf", 80)
 msg_font = pygame.font.Font("font\VT323-Regular.ttf", 50)
 
 game_active = False
-player_win = None
+# player_win = None
 start_time = 0
 
 # Title screen
@@ -75,18 +101,20 @@ title_rect = title.get_rect(center = (SCREEN_WIDTH/2,80))
 title_msg = msg_font.render("Press Space to start", False, "White")
 title_msg_rect = title_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT-100))
 
+# classic_msg = msg_font.render("Classic", False, "White")
+# classic_button_rect = pygame.draw.rect(classic_msg, (255,0,0), pygame.Rect(100, SCREEN_HEIGHT-300, 200, 150), 2, 1, 1, 1, 1, 1) #TODO Border not working
+
 loss_msg = msg_font.render("YOU LOSE", False, "Red")
 loss_msg_rect = loss_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
 
 win_msg = msg_font.render("YOU WIN", False, "Green")
 win_msg_rect = win_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
 
-
 # Game
 ball = Ball.Ball()
 player = Paddle.Player()
 comp = Paddle.Computer(ball)
-
+score_to_win = 3 #TODO
 # Groups
 ball_sg = pygame.sprite.GroupSingle()
 ball_sg.add(ball)
@@ -108,10 +136,10 @@ while True:
                 # start_time = int(pygame.time.get_ticks()/1000) #TODO
 
     if game_active:
-        set_game_screen(screen)
+        set_game_screen()
         update_components(ball_sg, player_g)
         sprite_collision(ball_sg, player_g)
-        check_game_over(ball)
+        update_score(ball, comp, player)
     else:
         set_title_screen()
 

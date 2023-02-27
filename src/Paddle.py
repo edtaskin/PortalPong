@@ -8,6 +8,11 @@ class Paddle(pygame.sprite.Sprite):
         self.dir = 0 # 0 for not moving, 1 for +y, -1 for -y
         self.surf = pygame.Surface((PADDLE_WIDTH, PADDLE_HEIGHT))
         self.surf.fill("White")
+        self.score = 0
+    
+    def reset(self):
+        self.dir = 0
+        self.score = 0
 
 class Player(Paddle):
     def __init__(self):
@@ -16,7 +21,7 @@ class Player(Paddle):
 
     def player_input(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_UP] and self.rect.top > 0:
+        if keys[pygame.K_UP] and self.rect.top > SCORE_HEIGHT:
             self.dir = -1
         elif keys[pygame.K_DOWN] and self.rect.bottom < SCREEN_HEIGHT:
             self.dir = 1
@@ -32,8 +37,9 @@ class Player(Paddle):
         self.rect.y += self.dir * self.speed
 
     def reset(self):
-        self.dir = 0
+        super().reset()
         self.rect = self.surf.get_rect(center = (SCREEN_WIDTH-30, SCREEN_HEIGHT/2))
+
 
 class Computer(Paddle):
     def __init__(self, ball):
@@ -41,12 +47,12 @@ class Computer(Paddle):
         self.rect = self.surf.get_rect(center = (30, SCREEN_HEIGHT/2))
         self.ball = ball
 
-    def move_towards_ball(self): 
+    def move_towards_ball(self):
         if self.rect.y < self.ball.rect.y:
             if self.rect.bottom <= SCREEN_HEIGHT:
                 self.dir = 1
         elif self.rect.y > self.ball.rect.y:
-            if self.rect.top >= 0:
+            if self.rect.top >= SCORE_HEIGHT:
                 self.dir = -1
         else: self.dir = 0
         self.rect.y += self.dir * self.speed            
@@ -55,4 +61,5 @@ class Computer(Paddle):
         self.move_towards_ball()
 
     def reset(self):
+        super().reset()
         self.rect.center = (30, SCREEN_HEIGHT/2)
