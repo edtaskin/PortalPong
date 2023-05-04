@@ -1,4 +1,4 @@
-import pygame, Ball, Paddle, Portal
+import pygame, Ball, Paddle
 from Constants import *
 from sys import exit
 from random import randint, choice
@@ -38,23 +38,20 @@ def update_score(ball, comp, player):
     if not ball.in_cooldown:
         ball.rect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
         ball.velocity = pygame.math.Vector2(0,0)
-        ball.start_cooldown_time = pygame.time.get_ticks() #TODO Her seferinde 0 oluyor
+        ball.start_cooldown_time = pygame.time.get_ticks()
         ball.in_cooldown = True
 
-        print(f"time:{pygame.time.get_ticks()}, ball: {ball.start_cooldown_time}") 
+        #print(f"time:{pygame.time.get_ticks()}, ball: {ball.start_cooldown_time}") 
         check_game_over(comp, player) 
 
-    if ball.in_cooldown and pygame.time.get_ticks() - ball.start_cooldown_time >= BALL_RESET_COOLDOWN: # TODO clock.get_time niye olmuyor?
+    if ball.in_cooldown and pygame.time.get_ticks() - ball.start_cooldown_time >= BALL_RESET_COOLDOWN: 
         ball.reset()
 
 def check_game_over(comp, player):
-    print(f"comp_score={comp.score}, player_score={player.score}")
-    # global player_win
-    if comp.score == score_to_win: #TODO
-        # player_win = False
+    #print(f"comp_score={comp.score}, player_score={player.score}")
+    if comp.score == score_to_win: 
         game_over(False)
     elif player.score == score_to_win:
-        # player_win = True
         game_over(True)
 
 def game_over(player_win):
@@ -91,7 +88,6 @@ title_font = pygame.font.Font("font\VT323-Regular.ttf", 80)
 msg_font = pygame.font.Font("font\VT323-Regular.ttf", 50)
 
 game_active = False
-# player_win = None
 start_time = 0
 
 # Title screen
@@ -100,9 +96,6 @@ title_rect = title.get_rect(center = (SCREEN_WIDTH/2,80))
 
 title_msg = msg_font.render("Press Space to start", False, "White")
 title_msg_rect = title_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT-100))
-
-# classic_msg = msg_font.render("Classic", False, "White")
-# classic_button_rect = pygame.draw.rect(classic_msg, (255,0,0), pygame.Rect(100, SCREEN_HEIGHT-300, 200, 150), 2, 1, 1, 1, 1, 1) #TODO Border not working
 
 loss_msg = msg_font.render("YOU LOSE", False, "Red")
 loss_msg_rect = loss_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
@@ -114,7 +107,7 @@ win_msg_rect = win_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
 ball = Ball.Ball()
 player = Paddle.Player()
 comp = Paddle.Computer(ball)
-score_to_win = 3 #TODO
+score_to_win = 3 #TODO Let the user choose this.
 # Groups
 ball_sg = pygame.sprite.GroupSingle()
 ball_sg.add(ball)
