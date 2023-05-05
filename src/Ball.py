@@ -1,5 +1,5 @@
 import pygame
-from Constants import *
+from constants import *
 from random import choice
 
 class Ball(pygame.sprite.Sprite):
