@@ -1,4 +1,4 @@
-import pygame, ball, paddle, button
+import pygame, ball, paddle
 from constants import *
 from sys import exit
 from random import randint, choice
@@ -6,7 +6,6 @@ from random import randint, choice
 def set_title_screen():
     screen.blit(title, title_rect)
     screen.blit(title_msg, title_msg_rect)
-    options_button.draw(screen, "Green")
 
 def set_game_screen():
     screen.fill("Black")
@@ -104,7 +103,6 @@ loss_msg_rect = loss_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
 win_msg = msg_font.render("YOU WIN", False, "Green")
 win_msg_rect = win_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
 
-options_button = button.Button("Black", SCREEN_WIDTH-100, 50, 80, 30, "Options")
 # Game
 ball = ball.Ball()
 player = paddle.Player()
