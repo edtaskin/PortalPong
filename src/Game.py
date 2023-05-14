@@ -20,6 +20,7 @@ def sprite_collision(ball_group, player_group):
         for player in player_group:
             if player.rect.colliderect(ball.rect):
                 ball.velocity.x *= -1
+                paddle_hit_fx.play(0,1000)
 
 def update_score(ball, comp, player):
     # print(f"Current time: {pygame.time.get_ticks()}")
@@ -30,8 +31,10 @@ def update_score(ball, comp, player):
     
     if ball.rect.x >= SCREEN_WIDTH:
         comp.score += 1
+        goal_fx.play(0)
     elif ball.rect.x <= 0:
         player.score += 1
+        goal_fx.play(0)
     else:
         if not ball.in_cooldown: return
 
@@ -115,6 +118,14 @@ ball_sg.add(ball)
 player_g = pygame.sprite.Group()
 player_g.add(player)
 player_g.add(comp)
+
+# Sound FX
+bg_music = pygame.mixer.Sound("resources/audio/bg_music.mp3")
+bg_music.set_volume(0.5)
+bg_music.play(loops=-1)
+
+goal_fx = pygame.mixer.Sound("resources/audio/goal.wav")
+paddle_hit_fx = pygame.mixer.Sound("resources/audio/paddle_hit.wav")
 
 while True:
     for event in pygame.event.get():
