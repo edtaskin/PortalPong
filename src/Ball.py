@@ -1,6 +1,8 @@
 import pygame
-from constants import *
+from Constants import *
 from random import choice
+
+ball_sg = pygame.sprite.GroupSingle()
 
 class Ball(pygame.sprite.Sprite):
     def __init__(self):
@@ -10,6 +12,7 @@ class Ball(pygame.sprite.Sprite):
         self.rect = pygame.Rect(SCREEN_WIDTH/2 - BALL_SIZE/2, SCREEN_HEIGHT/2 - BALL_SIZE/2, BALL_SIZE, BALL_SIZE)
         self.start_cooldown_time = 0
         self.in_cooldown = False
+        ball_sg.add(self)
 
     def reflect_ball(self):
         if self.rect.top <= SCORE_HEIGHT or self.rect.bottom >= SCREEN_HEIGHT:

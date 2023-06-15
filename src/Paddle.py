@@ -1,5 +1,7 @@
 import pygame
-from constants import *
+from Constants import *
+
+player_g = pygame.sprite.Group()
 
 class Paddle(pygame.sprite.Sprite):
     def __init__(self):
@@ -9,6 +11,8 @@ class Paddle(pygame.sprite.Sprite):
         self.surf = pygame.Surface((PADDLE_WIDTH, PADDLE_HEIGHT))
         self.surf.fill("White")
         self.score = 0
+        player_g.add(self)
+
     
     def reset(self):
         self.dir = 0

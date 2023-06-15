@@ -1,5 +1,5 @@
-import pygame, ball, paddle
-from constants import *
+import pygame, Ball, Paddle, Portal
+from Constants import *
 from sys import exit
 from random import randint, choice
 
@@ -12,15 +12,25 @@ def set_game_screen():
     pygame.draw.ellipse(screen, "White", ball.rect)
     screen.blit(player.surf, player.rect)
     screen.blit(comp.surf, comp.rect)
+    for portal in Portal.portals_g:
+        pygame.draw.rect(screen, portal.color, portal.rect1)
+        pygame.draw.rect(screen, portal.color, portal.rect2)  
     pygame.draw.line(screen, "White", (SCREEN_WIDTH/2, SCORE_HEIGHT), (SCREEN_WIDTH/2, SCREEN_HEIGHT))
     pygame.draw.line(screen, "White", (0,SCORE_HEIGHT), (SCREEN_WIDTH,SCORE_HEIGHT), 2)
 
-def sprite_collision(ball_group, player_group):
+def sprite_collision(ball_group, player_group, portal_group):
     for ball in ball_group:
         for player in player_group:
             if player.rect.colliderect(ball.rect):
                 ball.velocity.x *= -1
                 paddle_hit_fx.play(0,1000)
+        for portal in portal_group:
+            if ball.rect.colliderect(portal.rect1):
+                ball.rect.x = portal.rect2.x
+                ball.rect.y = portal.rect2.y
+            elif ball.rect.colliderect(portal.rect2):
+                ball.rect.x = portal.rect1.x
+                ball.rect.y = portal.rect1.y # Causes the program to freeze ?!
 
 def update_score(ball, comp, player):
     # print(f"Current time: {pygame.time.get_ticks()}")
@@ -63,21 +73,24 @@ def game_over(player_win):
     if player_win: screen.blit(win_msg, win_msg_rect)
     else: screen.blit(loss_msg, loss_msg_rect)
     
-    reset_components(ball_sg, player_g)
+    reset_components(Ball.ball_sg, Paddle.player_g, Portal.portals_g)
 
-def update_components(ball_g, player_g):
+def update_components(ball_g, player_g, portals_g):
     global player_win
     for ball in ball_g:
         ball.update()
     for player in player_g:
         player.update()
+    for portal in portals_g:
+        portal.update(pygame.time.get_ticks())
 
-def reset_components(ball_g, player_g):
+def reset_components(ball_g, player_g, portals_g):
     global player_win, game_active
     for ball in ball_g:
         ball.reset()
     for player in player_g:
         player.reset()
+    portals_g.empty()
     player_win = None
     game_active = False
 
@@ -107,17 +120,10 @@ win_msg = msg_font.render("YOU WIN", False, "Green")
 win_msg_rect = win_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
 
 # Game
-ball = ball.Ball()
-player = paddle.Player()
-comp = paddle.Computer(ball)
+ball = Ball.Ball()
+player = Paddle.Player()
+comp = Paddle.Computer(ball)
 score_to_win = 3 #TODO Let the user choose this.
-# Groups
-ball_sg = pygame.sprite.GroupSingle()
-ball_sg.add(ball)
-
-player_g = pygame.sprite.Group()
-player_g.add(player)
-player_g.add(comp)
 
 # Sound FX
 bg_music = pygame.mixer.Sound("resources/audio/bg_music.mp3")
@@ -127,22 +133,30 @@ bg_music.play(loops=-1)
 goal_fx = pygame.mixer.Sound("resources/audio/goal.wav")
 paddle_hit_fx = pygame.mixer.Sound("resources/audio/paddle_hit.wav")
 
+# Timers 
+portal_timer = pygame.USEREVENT + 1
+pygame.time.set_timer(portal_timer, 5000)
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
         
+        if event.type == portal_timer:
+            portal = Portal.Portal(pygame.time.get_ticks())
+
         if not game_active:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_active = True
                 is_game_over = False
                 # start_time = int(pygame.time.get_ticks()/1000) #TODO
+        
 
     if game_active:
         set_game_screen()
-        update_components(ball_sg, player_g)
-        sprite_collision(ball_sg, player_g)
+        update_components(Ball.ball_sg, Paddle.player_g, Portal.portals_g)
+        sprite_collision(Ball.ball_sg, Paddle.player_g, Portal.portals_g)
         update_score(ball, comp, player)
     else:
         set_title_screen()
