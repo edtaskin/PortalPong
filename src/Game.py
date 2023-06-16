@@ -13,8 +13,10 @@ def set_game_screen():
     screen.blit(player.surf, player.rect)
     screen.blit(comp.surf, comp.rect)
     for portal in Portal.portals_g:
-        pygame.draw.rect(screen, portal.color, portal.rect1)
-        pygame.draw.rect(screen, portal.color, portal.rect2)  
+        if portal.rect1 != None:
+            pygame.draw.rect(screen, portal.color, portal.rect1)
+        if portal.rect2 != None:
+            pygame.draw.rect(screen, portal.color, portal.rect2)  
     pygame.draw.line(screen, "White", (SCREEN_WIDTH/2, SCORE_HEIGHT), (SCREEN_WIDTH/2, SCREEN_HEIGHT))
     pygame.draw.line(screen, "White", (0,SCORE_HEIGHT), (SCREEN_WIDTH,SCORE_HEIGHT), 2)
 
@@ -25,12 +27,20 @@ def sprite_collision(ball_group, player_group, portal_group):
                 ball.velocity.x *= -1
                 paddle_hit_fx.play(0,1000)
         for portal in portal_group:
+            if portal.rect1 == None or portal.rect2 == None:
+                continue
             if ball.rect.colliderect(portal.rect1):
                 ball.rect.x = portal.rect2.x
                 ball.rect.y = portal.rect2.y
+                portal.rect1 = None
+                portal.duration = 2000
+                portal_fx.play()
             elif ball.rect.colliderect(portal.rect2):
                 ball.rect.x = portal.rect1.x
-                ball.rect.y = portal.rect1.y # Causes the program to freeze ?!
+                ball.rect.y = portal.rect1.y 
+                portal.rect2 = None
+                portal.duration = 2000
+                portal_fx.play()
 
 def update_score(ball, comp, player):
     # print(f"Current time: {pygame.time.get_ticks()}")
@@ -132,7 +142,7 @@ bg_music.play(loops=-1)
 
 goal_fx = pygame.mixer.Sound("resources/audio/goal.wav")
 paddle_hit_fx = pygame.mixer.Sound("resources/audio/paddle_hit.wav")
-
+portal_fx = pygame.mixer.Sound("resources/audio/portal.wav")
 # Timers 
 portal_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(portal_timer, 5000)
