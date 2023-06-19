@@ -7,11 +7,11 @@ def set_title_screen():
     screen.blit(title, title_rect)
     screen.blit(title_msg, title_msg_rect)
 
-def set_game_screen():
+def set_game_screen(p1, p2):
     screen.fill("Black")
     pygame.draw.ellipse(screen, "White", ball.rect)
-    screen.blit(player.surf, player.rect)
-    screen.blit(comp.surf, comp.rect)
+    screen.blit(p1.surf, p1.rect)
+    screen.blit(p2.surf, p2.rect)
     for portal in Portal.portals_g:
         if portal.rect1 != None:
             pygame.draw.rect(screen, portal.color, portal.rect1)
@@ -114,6 +114,8 @@ title_font = pygame.font.Font(FONT, 80)
 msg_font = pygame.font.Font(FONT, 50)
 
 game_active = False
+is_multiplayer = None
+is_online = False
 start_time = 0
 
 # Title screen
@@ -131,7 +133,8 @@ win_msg_rect = win_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
 
 # Game
 ball = Ball.Ball()
-player = Paddle.Player()
+player1 = Paddle.Player(1)
+player2 = Paddle.Player(2)
 comp = Paddle.Computer(ball)
 score_to_win = 3 #TODO Let the user choose this.
 
@@ -147,6 +150,7 @@ portal_fx = pygame.mixer.Sound("resources/audio/portal.wav")
 portal_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(portal_timer, 5000)
 
+# Game loop
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -159,15 +163,16 @@ while True:
         if not game_active:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_active = True
-                is_game_over = False
-                # start_time = int(pygame.time.get_ticks()/1000) #TODO
-        
+                is_game_over = False   
 
     if game_active:
-        set_game_screen()
+        if is_multiplayer:
+            set_game_screen(player1, player2)
+        else:
+            set_game_screen(player1, comp)
         update_components(Ball.ball_sg, Paddle.player_g, Portal.portals_g)
         sprite_collision(Ball.ball_sg, Paddle.player_g, Portal.portals_g)
-        update_score(ball, comp, player)
+        update_score(ball, comp, player1)
     else:
         set_title_screen()
 

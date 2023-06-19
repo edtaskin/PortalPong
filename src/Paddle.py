@@ -2,6 +2,18 @@ import pygame
 from Constants import *
 
 player_g = pygame.sprite.Group()
+p1_key_dict = {
+    "up": pygame.K_UP,
+    "down": pygame.K_DOWN
+}
+p2_key_dict = {
+    "up": pygame.K_w,
+    "down": pygame.K_s
+}
+key_dicts = {
+    1: p1_key_dict,
+    2: p2_key_dict
+}
 
 class Paddle(pygame.sprite.Sprite):
     def __init__(self):
@@ -19,15 +31,20 @@ class Paddle(pygame.sprite.Sprite):
         self.score = 0
 
 class Player(Paddle):
-    def __init__(self):
+    def __init__(self, player_no):
         super().__init__()
-        self.rect = self.surf.get_rect(center = (SCREEN_WIDTH-30, SCREEN_HEIGHT/2))
+        self.player_no = player_no
+        if player_no == 1:
+            self.rect = self.surf.get_rect(center = (SCREEN_WIDTH-30, SCREEN_HEIGHT/2))
+        else:
+            self.rect = self.surf.get_rect(center = (30, SCREEN_HEIGHT/2))
 
     def player_input(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_UP] and self.rect.top > SCORE_HEIGHT:
+        keys = key_dicts[self.player_no]
+        pressed_keys = pygame.key.get_pressed()
+        if pressed_keys[keys["up"]] and self.rect.top > SCORE_HEIGHT:
             self.dir = -1
-        elif keys[pygame.K_DOWN] and self.rect.bottom < SCREEN_HEIGHT:
+        elif pressed_keys[keys["down"]] and self.rect.bottom < SCREEN_HEIGHT:
             self.dir = 1
         else:
             self.dir = 0
