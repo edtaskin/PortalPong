@@ -6,6 +6,8 @@ from random import randint, choice
 def set_title_screen():
     screen.blit(title, title_rect)
     screen.blit(title_msg, title_msg_rect)
+    # screen.blit(classic_mode_msg, classic_mode_rect)
+    
 
 def set_game_screen(p1, p2):
     screen.fill("Black")
@@ -104,6 +106,8 @@ def reset_components(ball_g, player_g, portals_g):
     player_win = None
     game_active = False
 
+def is_mouse_in_rect(rect, mouse_x, mouse_y):
+    return rect.left <= mouse_x <= rect.right and rect.top <= mouse_y <= rect.bottom
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -116,20 +120,32 @@ msg_font = pygame.font.Font(FONT, 50)
 game_active = False
 is_multiplayer = None
 is_online = False
+is_portals = False
 start_time = 0
 
 # Title screen
 title = title_font.render("Pong", False, "White")
 title_rect = title.get_rect(center = (SCREEN_WIDTH/2,80))
 
-title_msg = msg_font.render("Press Space to start", False, "White")
+title_msg = msg_font.render("Press Space to start", False, "white")
 title_msg_rect = title_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT-100))
 
-loss_msg = msg_font.render("YOU LOSE", False, "Red")
+loss_msg = msg_font.render("YOU LOSE", False, "red")
 loss_msg_rect = loss_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
 
-win_msg = msg_font.render("YOU WIN", False, "Green")
+win_msg = msg_font.render("YOU WIN", False, "green")
 win_msg_rect = win_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
+
+classic_mode_msg = msg_font.render("Classic", False, "white")
+classic_mode_rect = classic_mode_msg.get_rect(midleft = (SCREEN_WIDTH/4, SCREEN_HEIGHT-200))
+classic_mode_button = pygame.Rect(SCREEN_WIDTH/4, SCREEN_HEIGHT-225, 150, 50)
+
+portals_mode_msg = msg_font.render("Portals", False, "white")
+portals_mode_rect = portals_mode_msg.get_rect(midleft = (SCREEN_WIDTH/2, SCREEN_HEIGHT-200))
+portals_mode_button = pygame.Rect(SCREEN_WIDTH/2, SCREEN_HEIGHT-225, 150, 50)
+
+buttons = [classic_mode_button, portals_mode_button]
+button_msgs = [classic_mode_msg, portals_mode_msg]
 
 # Game
 ball = Ball.Ball()
@@ -156,8 +172,16 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-        
-        if event.type == portal_timer:
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            for button, msg in zip(buttons, button_msgs):
+                game_active = True
+                if msg == "Portals":
+                    is_portals = True
+                else:
+                    is_portals = False
+
+        if is_portals and event.type == portal_timer:
             portal = Portal.Portal(pygame.time.get_ticks())
 
         if not game_active:
@@ -176,5 +200,15 @@ while True:
     else:
         set_title_screen()
 
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        for button, msg in zip(buttons, button_msgs):
+            if is_mouse_in_rect(button, mouse_x, mouse_y):
+                pygame.draw.rect(screen, "grey", button)
+            else:
+                pygame.draw.rect(screen, "black", button)
+                pygame.draw.rect(screen, "White", button, 1)
+            screen.blit(msg, button)
+
     pygame.display.update()
     clock.tick(60)
+
