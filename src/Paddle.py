@@ -1,5 +1,5 @@
 import pygame
-from constants import *
+from Constants import *
 
 class Paddle(pygame.sprite.Sprite):
     def __init__(self):

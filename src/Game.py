@@ -1,5 +1,5 @@
-import pygame, ball, paddle
-from constants import *
+import pygame, Ball, Paddle
+from Constants import *
 from sys import exit
 from random import randint, choice
 
@@ -107,9 +107,9 @@ win_msg = msg_font.render("YOU WIN", False, "Green")
 win_msg_rect = win_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
 
 # Game
-ball = ball.Ball()
-player = paddle.Player()
-comp = paddle.Computer(ball)
+ball = Ball.Ball()
+player = Paddle.Player()
+comp = Paddle.Computer(ball)
 score_to_win = 3 #TODO Let the user choose this.
 # Groups
 ball_sg = pygame.sprite.GroupSingle()
