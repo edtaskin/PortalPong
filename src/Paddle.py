@@ -69,7 +69,6 @@ class Computer(Paddle):
         self.ball = ball
 
     def move_towards_ball(self):
-        print("here")
         if self.rect.y < self.ball.rect.y:
             if self.rect.bottom <= SCREEN_HEIGHT:
                 self.dir = 1
