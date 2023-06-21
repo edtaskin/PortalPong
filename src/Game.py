@@ -23,8 +23,6 @@ def set_restart_screen():
     screen.fill("Black")
     screen.blit(title, title_rect)
     screen.blit(title_msg, title_msg_rect)
-    pygame.draw.ellipse(screen, "white", game_over_ball.rect)
-    game_over_ball.update()
     if p1_win: screen.blit(win_msg, win_msg_rect)
     else: screen.blit(loss_msg, loss_msg_rect)
 
@@ -101,10 +99,6 @@ def check_game_over(comp, player):
 def game_over():
     global is_game_over
     is_game_over = True
-    if p1_win:
-        game_over_ball.rect = win_msg_rect
-    else:
-        game_over_ball = loss_msg_rect
     set_restart_screen()
     reset_components(Ball.ball_sg, Paddle.player_g, Portal.portals_g)
 
@@ -193,7 +187,6 @@ score_to_win_buttons[0].is_pressed = True
 
 # Game
 ball = Ball.Ball()
-game_over_ball = Ball.Ball()
 player1 = Paddle.Player(1)
 player2 = Paddle.Player(2)
 comp = Paddle.Computer(ball)
