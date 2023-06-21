@@ -10,3 +10,4 @@ MIN_BALL_SPEED = 6
 MAX_BALL_SPEED = 9
 BALL_RESET_COOLDOWN = 1500
 FONT = "resources/font/VT323-Regular.ttf"
+PORTAL_COLORS = ["Blue", "Red", "Yellow"]
