@@ -1,5 +1,4 @@
 import pygame
-import Constants
 
 buttons = []
 
@@ -12,9 +11,3 @@ class Button:
         self.msg_rect = self.msg_text.get_rect(center = (x_pos, y_pos))
         self.is_pressed = False
         buttons.append(self)
-
-    #def press_button(self):
-     #   self.is_pressed = True
-
-    def change_msg(self, new_msg):
-        self.msg_text = self.font.render(new_msg, False, "white")

@@ -14,7 +14,7 @@ def set_title_screen():
     mouse_x, mouse_y = pygame.mouse.get_pos()
     for button in Button.buttons:
         if is_mouse_in_rect(button.button_rect, mouse_x, mouse_y) or button.is_pressed:
-            pygame.draw.rect(screen, "grey", button.button_rect)
+            pygame.draw.rect(screen, "#4B0082", button.button_rect)
         else:
             pygame.draw.rect(screen, "white", button.button_rect, 1)
         screen.blit(button.msg_text, button.button_rect)
@@ -42,9 +42,10 @@ def set_game_screen(p1, p2):
 def sprite_collision(ball_group, player_group, portal_group):
     for ball in ball_group:
         for player in player_group:
-            if player.rect.colliderect(ball.rect):
+            if not ball.reflections_disabled and player.rect.colliderect(ball.rect):
                 ball.velocity.x *= -1
                 paddle_hit_fx.play(0,1000)
+                ball.disable_reflections()
         for portal in portal_group:
             if portal.rect1 == None or portal.rect2 == None:
                 continue
@@ -61,17 +62,17 @@ def sprite_collision(ball_group, player_group, portal_group):
                 portal.duration = 2000
                 portal_fx.play()
 
-def update_score(ball, comp, player):
-    comp_score_msg = MSG_FONT.render(str(comp.score), False, "Red")
-    screen.blit(comp_score_msg, comp_score_msg.get_rect(center = (25, SCORE_HEIGHT/2)))
-    player_score_msg = MSG_FONT.render(str(player.score), False, "Green")
-    screen.blit(player_score_msg, player_score_msg.get_rect(center = (SCREEN_WIDTH-25, SCORE_HEIGHT/2)))
+def update_score(ball, p1, p2):
+    p1_score_msg = MSG_FONT.render(str(p1.score), False, "Red")
+    screen.blit(p1_score_msg, p1_score_msg.get_rect(center = (25, SCORE_HEIGHT/2)))
+    p2_score_msg = MSG_FONT.render(str(p2.score), False, "Green")
+    screen.blit(p2_score_msg, p2_score_msg.get_rect(center = (SCREEN_WIDTH-25, SCORE_HEIGHT/2)))
     
     if ball.rect.x >= SCREEN_WIDTH:
-        comp.score += 1
+        p1.score += 1
         goal_fx.play(0)
     elif ball.rect.x <= 0:
-        player.score += 1
+        p2.score += 1
         goal_fx.play(0)
     else:
         if not ball.in_cooldown: return
@@ -81,7 +82,7 @@ def update_score(ball, comp, player):
         ball.velocity = pygame.math.Vector2(0,0)
         ball.start_cooldown_time = pygame.time.get_ticks()
         ball.in_cooldown = True
-        check_game_over(comp, player) 
+        check_game_over(p1, p2) 
 
     if ball.in_cooldown and pygame.time.get_ticks() - ball.start_cooldown_time >= BALL_RESET_COOLDOWN: 
         ball.reset()
@@ -228,7 +229,6 @@ while True:
                         score_to_win = int(button.msg)
                     button.is_pressed = True
         
-
         if not game_active:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 if game_mode_selected:
@@ -243,11 +243,13 @@ while True:
     if game_active:
         if is_multiplayer:
             set_game_screen(player1, player2)
+            update_score(ball, player1, player2)
         else:
             set_game_screen(player1, comp)
+            update_score(ball, comp, player1)
         update_components(Ball.ball_sg, Paddle.player_g, Portal.portals_g)
         sprite_collision(Ball.ball_sg, Paddle.player_g, Portal.portals_g)
-        update_score(ball, comp, player1)
+        
     else:
         if is_game_over:
             set_restart_screen()

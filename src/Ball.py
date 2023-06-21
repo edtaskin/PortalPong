@@ -12,6 +12,8 @@ class Ball(pygame.sprite.Sprite):
         self.rect = pygame.Rect(SCREEN_WIDTH/2 - BALL_SIZE/2, SCREEN_HEIGHT/2 - BALL_SIZE/2, BALL_SIZE, BALL_SIZE)
         self.start_cooldown_time = 0
         self.in_cooldown = False
+        self.reflections_disabled = False
+        self.reflections_disabled_at = 0
         ball_sg.add(self)
 
     def reflect_ball(self):
@@ -22,6 +24,9 @@ class Ball(pygame.sprite.Sprite):
         self.reflect_ball()
         self.rect.x += self.velocity.x
         self.rect.y += self.velocity.y
+        if self.reflections_disabled and pygame.time.get_ticks() - self.reflections_disabled_at >= 500:
+            self.reflections_disabled = False
+            self.reflections_disabled_at = 0
     
     def reset(self):
         self.rect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
@@ -29,4 +34,6 @@ class Ball(pygame.sprite.Sprite):
         self.speed = MIN_BALL_SPEED
         self.in_cooldown = False
 
-
+    def disable_reflections(self):
+        self.reflections_disabled = True
+        self.reflections_disabled_at = pygame.time.get_ticks()

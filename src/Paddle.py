@@ -25,7 +25,6 @@ class Paddle(pygame.sprite.Sprite):
         self.score = 0
         player_g.add(self)
 
-    
     def reset(self):
         self.dir = 0
         self.score = 0
@@ -59,7 +58,10 @@ class Player(Paddle):
 
     def reset(self):
         super().reset()
-        self.rect = self.surf.get_rect(center = (SCREEN_WIDTH-30, SCREEN_HEIGHT/2))
+        if self.player_no == 1:
+            self.rect = self.surf.get_rect(center = (SCREEN_WIDTH-30, SCREEN_HEIGHT/2))
+        else:
+            self.rect = self.surf.get_rect(center = (30, SCREEN_HEIGHT/2))
 
 
 class Computer(Paddle):
