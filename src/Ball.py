@@ -24,7 +24,7 @@ class Ball(pygame.sprite.Sprite):
         self.reflect_ball()
         self.rect.x += self.velocity.x
         self.rect.y += self.velocity.y
-        if self.reflections_disabled and pygame.time.get_ticks() - self.reflections_disabled_at >= 500:
+        if self.reflections_disabled and pygame.time.get_ticks() - self.reflections_disabled_at >= 300:
             self.reflections_disabled = False
             self.reflections_disabled_at = 0
     

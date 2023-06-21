@@ -46,26 +46,27 @@ def sprite_collision(ball_group, player_group, portal_group):
                 ball.velocity.x *= -1
                 paddle_hit_fx.play(0,1000)
                 ball.disable_reflections()
-        for portal in portal_group:
-            if portal.rect1 == None or portal.rect2 == None:
-                continue
-            if ball.rect.colliderect(portal.rect1):
-                ball.rect.x = portal.rect2.x
-                ball.rect.y = portal.rect2.y
-                portal.rect1 = None
-                portal.duration = 2000
-                portal_fx.play()
-            elif ball.rect.colliderect(portal.rect2):
-                ball.rect.x = portal.rect1.x
-                ball.rect.y = portal.rect1.y 
-                portal.rect2 = None
-                portal.duration = 2000
-                portal_fx.play()
+        if is_portals:
+            for portal in portal_group:
+                if portal.rect1 == None or portal.rect2 == None:
+                    continue
+                if ball.rect.colliderect(portal.rect1):
+                    ball.rect.x = portal.rect2.x
+                    ball.rect.y = portal.rect2.y
+                    portal.rect1 = None
+                    portal.duration = 2000
+                    portal_fx.play()
+                elif ball.rect.colliderect(portal.rect2):
+                    ball.rect.x = portal.rect1.x
+                    ball.rect.y = portal.rect1.y 
+                    portal.rect2 = None
+                    portal.duration = 2000
+                    portal_fx.play()
 
 def update_score(ball, p1, p2):
-    p1_score_msg = MSG_FONT.render(str(p1.score), False, "Red")
+    p1_score_msg = MSG_FONT.render(str(p1.score), False, "blue" if is_multiplayer else "red")
     screen.blit(p1_score_msg, p1_score_msg.get_rect(center = (25, SCORE_HEIGHT/2)))
-    p2_score_msg = MSG_FONT.render(str(p2.score), False, "Green")
+    p2_score_msg = MSG_FONT.render(str(p2.score), False, "green")
     screen.blit(p2_score_msg, p2_score_msg.get_rect(center = (SCREEN_WIDTH-25, SCORE_HEIGHT/2)))
     
     if ball.rect.x >= SCREEN_WIDTH:
@@ -100,7 +101,10 @@ def game_over():
     global is_game_over
     is_game_over = True
     set_restart_screen()
-    reset_components(Ball.ball_sg, Paddle.player_g, Portal.portals_g)
+    if is_multiplayer:
+        reset_components(Ball.ball_sg, multiplayer_g, Portal.portals_g)
+    else:
+        reset_components(Ball.ball_sg, singleplayer_g, Portal.portals_g)
 
 def update_components(ball_g, player_g, portals_g):
     for ball in ball_g:
@@ -111,13 +115,13 @@ def update_components(ball_g, player_g, portals_g):
         portal.update(pygame.time.get_ticks())
 
 def reset_components(ball_g, player_g, portals_g):
-    global game_active
+    global game_active, player_win
     for ball in ball_g:
         ball.reset()
     for player in player_g:
         player.reset()
     portals_g.empty()
-    #player_win = None
+    player_win = None
     game_active = False
     reset_all_buttons()
 
@@ -192,6 +196,11 @@ player2 = Paddle.Player(2)
 comp = Paddle.Computer(ball)
 score_to_win = 3 
 
+singleplayer_g = pygame.sprite.Group()
+singleplayer_g.add(player1, comp)
+multiplayer_g = pygame.sprite.Group()
+multiplayer_g.add(player1, player2)
+
 # Sound FX
 bg_music = pygame.mixer.Sound("resources/audio/bg_music.mp3")
 bg_music.set_volume(0.5)
@@ -233,6 +242,13 @@ while True:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 if game_mode_selected:
                     game_active = True
+                    if is_multiplayer:
+                        win_msg = MSG_FONT.render("P1 WIN", False, "green")
+                        loss_msg = MSG_FONT.render("P2 WIN", False, "blue")
+                    else:
+                        win_msg = MSG_FONT.render("YOU WIN", False, "green")
+                        loss_msg = MSG_FONT.render("YOU LOSE", False, "red")
+
                 else:
                     title_msg = MSG_FONT.render("Select a game mode", False, "red")
                         
@@ -244,11 +260,13 @@ while True:
         if is_multiplayer:
             set_game_screen(player1, player2)
             update_score(ball, player1, player2)
+            update_components(Ball.ball_sg, multiplayer_g, Portal.portals_g)
+            sprite_collision(Ball.ball_sg, multiplayer_g, Portal.portals_g)
         else:
             set_game_screen(player1, comp)
             update_score(ball, comp, player1)
-        update_components(Ball.ball_sg, Paddle.player_g, Portal.portals_g)
-        sprite_collision(Ball.ball_sg, Paddle.player_g, Portal.portals_g)
+            update_components(Ball.ball_sg, singleplayer_g, Portal.portals_g)
+            sprite_collision(Ball.ball_sg, singleplayer_g, Portal.portals_g)
         
     else:
         if is_game_over:

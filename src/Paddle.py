@@ -1,7 +1,6 @@
 import pygame
 from Constants import *
 
-player_g = pygame.sprite.Group()
 p1_key_dict = {
     "up": pygame.K_UP,
     "down": pygame.K_DOWN
@@ -23,7 +22,6 @@ class Paddle(pygame.sprite.Sprite):
         self.surf = pygame.Surface((PADDLE_WIDTH, PADDLE_HEIGHT))
         self.surf.fill("White")
         self.score = 0
-        player_g.add(self)
 
     def reset(self):
         self.dir = 0
@@ -71,6 +69,7 @@ class Computer(Paddle):
         self.ball = ball
 
     def move_towards_ball(self):
+        print("here")
         if self.rect.y < self.ball.rect.y:
             if self.rect.bottom <= SCREEN_HEIGHT:
                 self.dir = 1
