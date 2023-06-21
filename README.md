@@ -1,9 +1,11 @@
 # Pong
 
 <img src="https://github.com/edtaskin/Pong/blob/main/resources/sample1.jpg" width="400" heigth="500"/>
-Pong game with 2 game modes: Classic and Portal Pong
-Can play against computer or a friend in local 2-player
+<br> Pong game created using PyGame. <br/> 
 
-## Roadmap:
-### Online Multiplayer mode
-### Play in Browser
+## Features:
+- [x] Classic Pong
+- [x] Portal Pong
+- [x] Local 2-player
+- [ ] Online 2-player
+- [ ] Playable on browser  
