@@ -1,5 +1,5 @@
 import pygame
-from Constants import *
+from constants import *
 
 p1_key_dict = {
     "up": pygame.K_UP,
@@ -45,10 +45,6 @@ class Player(Paddle):
             self.dir = 1
         else:
             self.dir = 0
-
-    # def reflect_player(self):
-    #     if self.rect.top <= 0 or self.rect.bottom >= HEIGHT:
-    #         self.dir = (-1)*self.dir
 
     def update(self):
         self.player_input()

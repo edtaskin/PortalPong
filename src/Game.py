@@ -1,6 +1,9 @@
 import pygame
-import Ball, Paddle, Portal, Button
-from Constants import *
+from ball import Ball
+from paddle import Paddle, Player, Computer 
+from portal import Portal 
+from button import Button
+from constants import *
 from sys import exit
 from random import randint, choice
 
@@ -180,35 +183,35 @@ win_msg_rect = win_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
 
 game_mode_msg = SMALL_MSG_FONT.render("Game mode:", False, "white")
 game_mode_msg_rect = game_mode_msg.get_rect(center = (title_msg_rect.left - 100, SCREEN_HEIGHT/2 - 75))
-classic_mode_button = Button.Button("Classic", MSG_FONT, TITLE_SCREEN, title_msg_rect.left, game_mode_msg_rect.centery - 25, 150, 50)
-portals_mode_button = Button.Button("Portals", MSG_FONT, TITLE_SCREEN, title_msg_rect.right - 150, game_mode_msg_rect.centery - 25, 150, 50)
+classic_mode_button = Button("Classic", MSG_FONT, TITLE_SCREEN, title_msg_rect.left, game_mode_msg_rect.centery - 25, 150, 50)
+portals_mode_button = Button("Portals", MSG_FONT, TITLE_SCREEN, title_msg_rect.right - 150, game_mode_msg_rect.centery - 25, 150, 50)
 game_mode_buttons = [classic_mode_button, portals_mode_button]
 
 player_count_msg = SMALL_MSG_FONT.render("Player count:", False, "white")
 player_count_msg_rect = player_count_msg.get_rect(midright = (classic_mode_button.button_rect.left, SCREEN_HEIGHT/2 + 25))
-singleplayer_button = Button.Button("1P", MSG_FONT, TITLE_SCREEN, classic_mode_button.button_rect.centerx, player_count_msg_rect.centery -25, 50, 50)
+singleplayer_button = Button("1P", MSG_FONT, TITLE_SCREEN, classic_mode_button.button_rect.centerx, player_count_msg_rect.centery -25, 50, 50)
 singleplayer_button.is_pressed = True    
-multiplayer_button = Button.Button("2P", MSG_FONT, TITLE_SCREEN, portals_mode_button.button_rect.centerx, player_count_msg_rect.centery - 25, 50, 50)
+multiplayer_button = Button("2P", MSG_FONT, TITLE_SCREEN, portals_mode_button.button_rect.centerx, player_count_msg_rect.centery - 25, 50, 50)
 player_count_buttons = [singleplayer_button, multiplayer_button]
 
 score_to_win_msg = SMALL_MSG_FONT.render("Score to win:", False, "white")
 score_to_win_msg_rect = score_to_win_msg.get_rect(midright = (classic_mode_button.button_rect.left, 3*SCREEN_HEIGHT/4))
 score_to_win_buttons = []
-score_to_win_buttons.append(Button.Button("3", MSG_FONT, TITLE_SCREEN, classic_mode_button.button_rect.centerx, score_to_win_msg_rect.centery - 25, 50, 50))
-score_to_win_buttons.append(Button.Button("7", MSG_FONT, TITLE_SCREEN, SCREEN_WIDTH/2, score_to_win_msg_rect.centery - 25, 50, 50))
-score_to_win_buttons.append(Button.Button("11", MSG_FONT, TITLE_SCREEN, portals_mode_button.button_rect.centerx, score_to_win_msg_rect.centery - 25, 50, 50))
+score_to_win_buttons.append(Button("3", MSG_FONT, TITLE_SCREEN, classic_mode_button.button_rect.centerx, score_to_win_msg_rect.centery - 25, 50, 50))
+score_to_win_buttons.append(Button("7", MSG_FONT, TITLE_SCREEN, SCREEN_WIDTH/2, score_to_win_msg_rect.centery - 25, 50, 50))
+score_to_win_buttons.append(Button("11", MSG_FONT, TITLE_SCREEN, portals_mode_button.button_rect.centerx, score_to_win_msg_rect.centery - 25, 50, 50))
 score_to_win_buttons[0].is_pressed = True
 
 title_screen_buttons = game_mode_buttons + player_count_buttons + score_to_win_buttons
 
 # Restart Screen
-back_button = Button.Button("<-BACK", SMALL_MSG_FONT, RESTART_SCREEN, 50, 50, 80, 30)
+back_button = Button("<-BACK", SMALL_MSG_FONT, RESTART_SCREEN, 50, 50, 80, 30)
 
 # Game
-ball = Ball.Ball()
-player1 = Paddle.Player(1)
-player2 = Paddle.Player(2)
-comp = Paddle.Computer(ball)
+ball = Ball()
+player1 = Player(1)
+player2 = Player(2)
+comp = Computer(ball)
 score_to_win = 3 
 
 singleplayer_g = pygame.sprite.Group()
@@ -257,7 +260,7 @@ while True:
                     button.is_pressed = True
         
         if is_portals and event.type == portal_timer:
-            portal = Portal.Portal(pygame.time.get_ticks())
+            portal = Portal(pygame.time.get_ticks())
         
         if not game_active:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:

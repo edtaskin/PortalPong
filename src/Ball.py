@@ -1,10 +1,9 @@
 import pygame
-from Constants import *
+from constants import *
 from random import choice
 
-ball_sg = pygame.sprite.GroupSingle()
-
 class Ball(pygame.sprite.Sprite):
+    ball_sg = pygame.sprite.GroupSingle()
     def __init__(self):
         super().__init__()
         self.velocity = pygame.math.Vector2(MIN_BALL_SPEED * choice([-1,1]), MIN_BALL_SPEED * choice([-1,1]))
@@ -14,7 +13,7 @@ class Ball(pygame.sprite.Sprite):
         self.in_cooldown = False
         self.reflections_disabled = False
         self.reflections_disabled_at = 0
-        ball_sg.add(self)
+        Ball.ball_sg.add(self)
 
     def reflect_ball(self):
         if self.rect.top <= SCORE_HEIGHT or self.rect.bottom >= SCREEN_HEIGHT:
