@@ -1,6 +1,6 @@
 import pygame
-from ball import Ball
-from paddle import Paddle, Player, Computer 
+from ball import Ball 
+from paddle import Paddle 
 from portal import Portal 
 from button import Button
 from constants import *
@@ -36,7 +36,7 @@ def set_game_screen(p1, p2):
     pygame.draw.ellipse(screen, "White", ball.rect)
     screen.blit(p1.surf, p1.rect)
     screen.blit(p2.surf, p2.rect)
-    for portal in Portal.portals_g:
+    for portal in portal.portals_g:
         if portal.rect1 != None:
             pygame.draw.rect(screen, portal.color, portal.rect1)
         if portal.rect2 != None:
@@ -107,9 +107,9 @@ def game_over():
     is_game_over = True
     set_restart_screen()
     if is_multiplayer:
-        reset_components(Ball.ball_sg, multiplayer_g, Portal.portals_g)
+        reset_components(ball.ball_sg, multiplayer_g, portal.portals_g)
     else:
-        reset_components(Ball.ball_sg, singleplayer_g, Portal.portals_g)
+        reset_components(ball.ball_sg, singleplayer_g, portal.portals_g)
 
 def update_components(ball_g, player_g, portals_g):
     for ball in ball_g:
@@ -143,11 +143,11 @@ def is_mouse_in_rect(rect, mouse_x, mouse_y):
 
 def hover_or_press_button(button):
     mouse_x, mouse_y = pygame.mouse.get_pos()
-    if is_mouse_in_rect(button.button_rect, mouse_x, mouse_y) or button.is_pressed:
-                pygame.draw.rect(screen, "#4B0082", button.button_rect)
+    if is_mouse_in_rect(button.rect, mouse_x, mouse_y) or button.is_pressed:
+                pygame.draw.rect(screen, "#4B0082", button.rect)
     else:
-        pygame.draw.rect(screen, "white", button.button_rect, 1)
-    screen.blit(button.msg_text, button.button_rect)
+        pygame.draw.rect(screen, "white", button.rect, 1)
+    screen.blit(button.content, button.rect)
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -183,35 +183,38 @@ win_msg_rect = win_msg.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
 
 game_mode_msg = SMALL_MSG_FONT.render("Game mode:", False, "white")
 game_mode_msg_rect = game_mode_msg.get_rect(center = (title_msg_rect.left - 100, SCREEN_HEIGHT/2 - 75))
-classic_mode_button = Button("Classic", MSG_FONT, TITLE_SCREEN, title_msg_rect.left, game_mode_msg_rect.centery - 25, 150, 50)
-portals_mode_button = Button("Portals", MSG_FONT, TITLE_SCREEN, title_msg_rect.right - 150, game_mode_msg_rect.centery - 25, 150, 50)
+classic_mode_button = Button.from_text(TITLE_SCREEN, "Classic", MSG_FONT, pygame.Rect(title_msg_rect.left, game_mode_msg_rect.centery - 25, 150, 50))
+portals_mode_button = Button.from_text(TITLE_SCREEN, "Portals", MSG_FONT, pygame.Rect(title_msg_rect.right - 150, game_mode_msg_rect.centery - 25, 150, 50))
 game_mode_buttons = [classic_mode_button, portals_mode_button]
 
 player_count_msg = SMALL_MSG_FONT.render("Player count:", False, "white")
-player_count_msg_rect = player_count_msg.get_rect(midright = (classic_mode_button.button_rect.left, SCREEN_HEIGHT/2 + 25))
-singleplayer_button = Button("1P", MSG_FONT, TITLE_SCREEN, classic_mode_button.button_rect.centerx, player_count_msg_rect.centery -25, 50, 50)
+player_count_msg_rect = player_count_msg.get_rect(midright = (classic_mode_button.rect.left, SCREEN_HEIGHT/2 + 25))
+singleplayer_button = Button.from_text(TITLE_SCREEN, "1P", MSG_FONT, pygame.Rect(classic_mode_button.rect.centerx, player_count_msg_rect.centery -25, 50, 50))
 singleplayer_button.is_pressed = True    
-multiplayer_button = Button("2P", MSG_FONT, TITLE_SCREEN, portals_mode_button.button_rect.centerx, player_count_msg_rect.centery - 25, 50, 50)
+multiplayer_button = Button.from_text(TITLE_SCREEN, "2P", MSG_FONT, pygame.Rect(portals_mode_button.rect.centerx, player_count_msg_rect.centery - 25, 50, 50))
 player_count_buttons = [singleplayer_button, multiplayer_button]
 
 score_to_win_msg = SMALL_MSG_FONT.render("Score to win:", False, "white")
-score_to_win_msg_rect = score_to_win_msg.get_rect(midright = (classic_mode_button.button_rect.left, 3*SCREEN_HEIGHT/4))
+score_to_win_msg_rect = score_to_win_msg.get_rect(midright = (classic_mode_button.rect.left, 3*SCREEN_HEIGHT/4))
 score_to_win_buttons = []
-score_to_win_buttons.append(Button("3", MSG_FONT, TITLE_SCREEN, classic_mode_button.button_rect.centerx, score_to_win_msg_rect.centery - 25, 50, 50))
-score_to_win_buttons.append(Button("7", MSG_FONT, TITLE_SCREEN, SCREEN_WIDTH/2, score_to_win_msg_rect.centery - 25, 50, 50))
-score_to_win_buttons.append(Button("11", MSG_FONT, TITLE_SCREEN, portals_mode_button.button_rect.centerx, score_to_win_msg_rect.centery - 25, 50, 50))
+score_to_win_buttons.append(Button.from_text(TITLE_SCREEN, "3", MSG_FONT, pygame.Rect(classic_mode_button.rect.centerx, score_to_win_msg_rect.centery - 25, 50, 50)))
+score_to_win_buttons.append(Button.from_text(TITLE_SCREEN, "7", MSG_FONT, pygame.Rect(SCREEN_WIDTH/2, score_to_win_msg_rect.centery - 25, 50, 50)))
+score_to_win_buttons.append(Button.from_text(TITLE_SCREEN, "11", MSG_FONT, pygame.Rect(portals_mode_button.rect.centerx, score_to_win_msg_rect.centery - 25, 50, 50)))
 score_to_win_buttons[0].is_pressed = True
 
 title_screen_buttons = game_mode_buttons + player_count_buttons + score_to_win_buttons
 
+settings_button_img = pygame.image.load("resources/pixel_art/home_button.png").convert_alpha() # TODO Update with correct img
+settings_button = Button.from_image([TITLE_SCREEN, RESTART_SCREEN], settings_button_img, pygame.Rect(SCREEN_WIDTH - 150, 100, 100, 100))
+
 # Restart Screen
-back_button = Button("<-BACK", SMALL_MSG_FONT, RESTART_SCREEN, 50, 50, 80, 30)
+back_button = Button.from_text(RESTART_SCREEN, "<-BACK", SMALL_MSG_FONT, pygame.Rect(50, 50, 80, 30))
 
 # Game
-ball = Ball()
-player1 = Player(1)
-player2 = Player(2)
-comp = Computer(ball)
+ball = ball.Ball()
+player1 = paddle.Player(1)
+player2 = paddle.Player(2)
+comp = paddle.Computer(ball)
 score_to_win = 3 
 
 singleplayer_g = pygame.sprite.Group()
@@ -240,7 +243,7 @@ while True:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             for button in Button.buttons:
-                if button.button_rect.collidepoint(event.pos):
+                if button.rect.collidepoint(event.pos):
                     if button is back_button:
                         game_active = False
                         is_game_over = False
@@ -256,11 +259,11 @@ while True:
                         is_multiplayer = button is multiplayer_button
                     elif button in score_to_win_buttons:
                         reset_group_of_buttons(score_to_win_buttons)
-                        score_to_win = int(button.msg)
+                        score_to_win = int(button.content.get_text())
                     button.is_pressed = True
         
         if is_portals and event.type == portal_timer:
-            portal = Portal(pygame.time.get_ticks())
+            portal = portal.Portal(pygame.time.get_ticks())
         
         if not game_active:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -280,13 +283,13 @@ while True:
         if is_multiplayer:
             set_game_screen(player1, player2)
             update_score(ball, player1, player2)
-            update_components(Ball.ball_sg, multiplayer_g, Portal.portals_g)
-            sprite_collision(Ball.ball_sg, multiplayer_g, Portal.portals_g)
+            update_components(ball.ball_sg, multiplayer_g, portal.portals_g)
+            sprite_collision(ball.ball_sg, multiplayer_g, portal.portals_g)
         else:
             set_game_screen(player1, comp)
             update_score(ball, comp, player1)
-            update_components(Ball.ball_sg, singleplayer_g, Portal.portals_g)
-            sprite_collision(Ball.ball_sg, singleplayer_g, Portal.portals_g)
+            update_components(ball.ball_sg, singleplayer_g, portal.portals_g)
+            sprite_collision(ball.ball_sg, singleplayer_g, portal.portals_g)
     else:
         if is_game_over:
             current_screen = RESTART_SCREEN
