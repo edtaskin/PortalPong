@@ -1,6 +1,6 @@
 import pygame
 from ball import Ball 
-from paddle import Paddle 
+from paddle import Paddle, Player, Computer 
 from portal import Portal 
 from button import Button
 from constants import *
@@ -36,7 +36,7 @@ def set_game_screen(p1, p2):
     pygame.draw.ellipse(screen, "White", ball.rect)
     screen.blit(p1.surf, p1.rect)
     screen.blit(p2.surf, p2.rect)
-    for portal in portal.portals_g:
+    for portal in Portal.portals_g:
         if portal.rect1 != None:
             pygame.draw.rect(screen, portal.color, portal.rect1)
         if portal.rect2 != None:
@@ -107,9 +107,9 @@ def game_over():
     is_game_over = True
     set_restart_screen()
     if is_multiplayer:
-        reset_components(ball.ball_sg, multiplayer_g, portal.portals_g)
+        reset_components(ball.ball_sg, multiplayer_g, Portal.portals_g)
     else:
-        reset_components(ball.ball_sg, singleplayer_g, portal.portals_g)
+        reset_components(ball.ball_sg, singleplayer_g, Portal.portals_g)
 
 def update_components(ball_g, player_g, portals_g):
     for ball in ball_g:
@@ -211,10 +211,10 @@ settings_button = Button.from_image([TITLE_SCREEN, RESTART_SCREEN], settings_but
 back_button = Button.from_text(RESTART_SCREEN, "<-BACK", SMALL_MSG_FONT, pygame.Rect(50, 50, 80, 30))
 
 # Game
-ball = ball.Ball()
-player1 = paddle.Player(1)
-player2 = paddle.Player(2)
-comp = paddle.Computer(ball)
+ball = Ball()
+player1 = Player(1)
+player2 = Player(2)
+comp = Computer(ball)
 score_to_win = 3 
 
 singleplayer_g = pygame.sprite.Group()
@@ -283,13 +283,13 @@ while True:
         if is_multiplayer:
             set_game_screen(player1, player2)
             update_score(ball, player1, player2)
-            update_components(ball.ball_sg, multiplayer_g, portal.portals_g)
-            sprite_collision(ball.ball_sg, multiplayer_g, portal.portals_g)
+            update_components(ball.ball_sg, multiplayer_g, Portal.portals_g)
+            sprite_collision(ball.ball_sg, multiplayer_g, Portal.portals_g)
         else:
             set_game_screen(player1, comp)
             update_score(ball, comp, player1)
-            update_components(ball.ball_sg, singleplayer_g, portal.portals_g)
-            sprite_collision(ball.ball_sg, singleplayer_g, portal.portals_g)
+            update_components(ball.ball_sg, singleplayer_g, Portal.portals_g)
+            sprite_collision(ball.ball_sg, singleplayer_g, Portal.portals_g)
     else:
         if is_game_over:
             current_screen = RESTART_SCREEN
