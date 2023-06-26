@@ -263,7 +263,7 @@ while True:
                     button.is_pressed = True
         
         if is_portals and event.type == portal_timer:
-            portal = portal.Portal(pygame.time.get_ticks())
+            portal = Portal(pygame.time.get_ticks())
         
         if not game_active:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
