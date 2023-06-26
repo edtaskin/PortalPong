@@ -103,8 +103,11 @@ def check_game_over(comp, player):
         game_over()
 
 def game_over():
-    global is_game_over
+    global is_game_over, is_multiplayer, score_to_win, is_portals
     is_game_over = True
+    is_multiplayer = False # Revert back to default options
+    score_to_win = 3
+    is_portals = False
     set_restart_screen()
     if is_multiplayer:
         reset_components(ball.ball_sg, multiplayer_g, Portal.portals_g)
