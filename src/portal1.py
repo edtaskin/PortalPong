@@ -1,5 +1,5 @@
 import pygame
-from constants import *
+from constants1 import *
 from random import randint, choice
 
 class Portal(pygame.sprite.Sprite):
