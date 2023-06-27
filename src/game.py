@@ -259,7 +259,7 @@ while True:
                         is_multiplayer = button is multiplayer_button
                     elif button in score_to_win_buttons:
                         reset_group_of_buttons(score_to_win_buttons)
-                        score_to_win = int(button.content.get_text())
+                        score_to_win = int(button.txt)
                     button.is_pressed = True
         
         if is_portals and event.type == portal_timer:
