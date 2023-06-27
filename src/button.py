@@ -1,14 +1,19 @@
 import pygame
 
-buttons = []
-
 class Button:
-    def __init__(self, msg, font, display_screen, x_pos, y_pos, width, height):
-        self.msg = msg
-        self.msg_text = font.render(msg, False, "white")
-        self.font = font
-        self.button_rect = pygame.Rect(x_pos, y_pos, width, height)
-        self.msg_rect = self.msg_text.get_rect(center = (x_pos, y_pos))
+    buttons = []
+
+    def __init__(self, display_screen, content, rect):
+        self.content = content
         self.display_screen = display_screen
+        self.rect = rect
         self.is_pressed = False
-        buttons.append(self)
+        Button.buttons.append(self)
+        
+    @classmethod
+    def from_image(cls, display_screen, img, rect):
+        return cls(display_screen, img, rect)
+
+    @classmethod
+    def from_text(cls, display_screen, txt, font, rect):
+        return cls(display_screen, font.render(txt, False, "white"), rect)

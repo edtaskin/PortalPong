@@ -46,10 +46,6 @@ class Player(Paddle):
         else:
             self.dir = 0
 
-    # def reflect_player(self):
-    #     if self.rect.top <= 0 or self.rect.bottom >= HEIGHT:
-    #         self.dir = (-1)*self.dir
-
     def update(self):
         self.player_input()
         self.rect.y += self.dir * self.speed
