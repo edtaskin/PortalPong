@@ -1,5 +1,5 @@
 import pygame
-from Constants import *
+from constants import *
 
 p1_key_dict = {
     "up": pygame.K_UP,

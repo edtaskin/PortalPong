@@ -1,5 +1,5 @@
 import pygame
-from Constants import *
+from constants import *
 from random import randint, choice
 
 portals_g = pygame.sprite.Group()
