@@ -18,7 +18,7 @@ def set_title_screen():
         singleplayer_button.is_pressed = True    # Default options
         score_to_win_buttons[0].is_pressed = True
         back_button.is_pressed = False
-    for button in button.buttons:
+    for button in Button.buttons:
         if button.display_screen != None and current_screen != button.display_screen:
             continue
         hover_or_press_button(button)
@@ -36,7 +36,7 @@ def set_game_screen(p1, p2):
     pygame.draw.ellipse(screen, "White", ball.rect)
     screen.blit(p1.surf, p1.rect)
     screen.blit(p2.surf, p2.rect)
-    for portal in portal.portals_g:
+    for portal in Portal.portals_g:
         if portal.rect1 != None:
             pygame.draw.rect(screen, portal.color, portal.rect1)
         if portal.rect2 != None:
@@ -134,7 +134,7 @@ def reset_components(ball_g, player_g, portals_g):
     reset_all_buttons()
 
 def reset_all_buttons():
-    for button in button.buttons:
+    for button in Button.buttons:
         button.is_pressed = False
 
 def reset_group_of_buttons(buttons):
