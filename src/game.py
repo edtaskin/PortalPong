@@ -103,8 +103,9 @@ def check_game_over(comp, player):
         game_over()
 
 def game_over():
-    global is_game_over, is_multiplayer, score_to_win, is_portals
+    global is_game_over, game_mode_selected, is_multiplayer, score_to_win, is_portals
     is_game_over = True
+    game_mode_selected = False
     is_multiplayer = False # Revert back to default options
     score_to_win = 3
     is_portals = False
