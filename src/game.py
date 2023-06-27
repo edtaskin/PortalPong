@@ -207,9 +207,6 @@ score_to_win_buttons[0].is_pressed = True
 
 title_screen_buttons = game_mode_buttons + player_count_buttons + score_to_win_buttons
 
-settings_button_img = pygame.image.load("resources/pixel_art/home_button.png").convert_alpha() # TODO Update with correct img
-settings_button = Button.from_image([TITLE_SCREEN, RESTART_SCREEN], settings_button_img, pygame.Rect(SCREEN_WIDTH - 150, 100, 100, 100))
-
 # Restart Screen
 back_button = Button.from_text(RESTART_SCREEN, "<-BACK", SMALL_MSG_FONT, pygame.Rect(50, 50, 80, 30))
 
@@ -262,7 +259,7 @@ while True:
                         is_multiplayer = button is multiplayer_button
                     elif button in score_to_win_buttons:
                         reset_group_of_buttons(score_to_win_buttons)
-                        score_to_win = int(button.content.get_text())
+                        score_to_win = int(button.txt)
                     button.is_pressed = True
         
         if is_portals and event.type == portal_timer:
