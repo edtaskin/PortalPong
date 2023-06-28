@@ -21,11 +21,16 @@ class Paddle(pygame.sprite.Sprite):
         self.dir = 0 # 0 for not moving, 1 for +y, -1 for -y
         self.surf = pygame.Surface((PADDLE_WIDTH, PADDLE_HEIGHT))
         self.surf.fill("White")
+        self.rect = None
         self.score = 0
+
+    def display(self, screen):
+        screen.blit(self.surf, self.rect)
 
     def reset(self):
         self.dir = 0
         self.score = 0
+
 
 class Player(Paddle):
     def __init__(self, player_no):
