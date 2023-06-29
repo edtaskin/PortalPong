@@ -37,8 +37,8 @@ class Rectangle:
         self.outline_width =outline_width
 
     def display(self, screen):
-        screen.blit(self.content, self.rect)
         if self.background_color != None:
             pygame.draw.rect(screen, self.background_color, self.rect)
         if self.outline_color != None and self.outline_width != None:
             pygame.draw.rect(screen, self.outline_color, self.rect, self.outline_width)
+        screen.blit(self.content, self.rect)

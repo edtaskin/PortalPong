@@ -250,7 +250,6 @@ w_key = Rectangle.from_rect(GAME_SCREEN, SMALL_MSG_FONT, "W", pygame.Rect(100, 5
 s_key = Rectangle.from_rect(GAME_SCREEN, SMALL_MSG_FONT, "S", pygame.Rect(w_key.rect.left, w_key.rect.bottom + 1, w_key.rect.width, w_key.rect.height), "black", None, None, "white")
 up_arrow_key = Rectangle.from_image(GAME_SCREEN, up_arrow_key_img, pygame.Rect(SCREEN_WIDTH - 100, w_key.rect.top, w_key.rect.width, w_key.rect.height))
 down_arrow_key = Rectangle.from_image(GAME_SCREEN, down_arrow_key_img, pygame.Rect(up_arrow_key.rect.left, up_arrow_key.rect.bottom + 1, w_key.rect.width, w_key.rect.height))
-control_button_assist_keys = [w_key, s_key, up_arrow_key, down_arrow_key]
 assist_keys_display_time = None
 
 def display_control_assist():
@@ -258,15 +257,21 @@ def display_control_assist():
     if assist_keys_display_time == None:
         assist_keys_display_time = pygame.time.get_ticks()
     if pygame.time.get_ticks() - assist_keys_display_time < 2500:
-        w_key.change_outline("red", 2)
+        if is_multiplayer:
+            w_key.change_outline("red", 2)
         up_arrow_key.change_outline("red", 2)
     else:
-        w_key.change_outline("white", 2)
-        s_key.change_outline("red", 2)
+        if is_multiplayer:
+            w_key.change_outline("white", 2)
+            s_key.change_outline("red", 2)
         up_arrow_key.change_outline(None)
         down_arrow_key.change_outline("red", 2)
-    for key in control_button_assist_keys:
-        key.display(screen)
+
+    if is_multiplayer:
+        w_key.display(screen)
+        s_key.display(screen)
+    up_arrow_key.display(screen)
+    down_arrow_key.display(screen)
 
 # Game
 ball = Ball()
