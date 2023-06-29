@@ -29,23 +29,34 @@ def set_restart_screen():
     else:       loss_msg.display(screen)
 
 def set_game_screen(p1, p2):
+    global assist_keys_display_time
     screen.fill("Black")
     pygame.draw.ellipse(screen, "White", ball.rect)
     p1.display(screen)
     p2.display(screen)
+
     for button in Button.game_screen_buttons:
         button.display(screen)
+
+    if assist_keys_display_time == None:
+        assist_keys_display_time = pygame.time.get_ticks()
+
+    if pygame.time.get_ticks() - assist_keys_display_time <= 5000: 
+        display_control_assist()
+    else:
+        assist_keys_display_time = 0
+        s_key.change_outline(None)
+        down_arrow_key.change_outline(None)
+
     if is_portals:
         for portal in Portal.portals_g:
             if portal.rect1 != None:
                 pygame.draw.rect(screen, portal.color, portal.rect1)
             if portal.rect2 != None:
                 pygame.draw.rect(screen, portal.color, portal.rect2)  
-    pygame.draw.line(screen, "White", (SCREEN_WIDTH/2, SCORE_HEIGHT), (SCREEN_WIDTH/2, SCREEN_HEIGHT))
-    pygame.draw.line(screen, "White", (0,SCORE_HEIGHT), (SCREEN_WIDTH,SCORE_HEIGHT), 2)
-    if assist_keys_display_time == None or assist_keys_display_time - pygame.time.get_ticks() <= 5000:
-        for rect in control_button_assist_keys:
-            rect.display(screen)
+    
+    pygame.draw.line(screen, "white", (SCREEN_WIDTH/2, SCORE_HEIGHT), (SCREEN_WIDTH/2, SCREEN_HEIGHT))
+    pygame.draw.line(screen, "white", (0,SCORE_HEIGHT), (SCREEN_WIDTH,SCORE_HEIGHT), 2)
 
 def sprite_collision(ball_group, player_group, portal_group):
     for ball in ball_group:
@@ -106,12 +117,13 @@ def check_game_over(comp, player):
         game_over()
 
 def game_over():
-    global is_game_over, game_mode_selected, is_multiplayer, score_to_win, is_portals
+    global is_game_over, game_mode_selected, is_multiplayer, score_to_win, is_portals, assist_keys_display_time
     is_game_over = True
     game_mode_selected = False
     is_multiplayer = False # Revert back to default options
     score_to_win = 3
     is_portals = False
+    assist_keys_display_time = None
     set_restart_screen()
     if is_multiplayer:
         reset_components(ball.ball_sg, multiplayer_g, Portal.portals_g)
@@ -174,7 +186,7 @@ def game_mode_button_action():
     global game_mode_selected, title_msg
     reset_group_of_buttons(game_mode_buttons)
     game_mode_selected = True
-    title_msg.update_text(MSG_FONT, "Press Space to start")
+    title_msg.change_text(MSG_FONT, "Press Space to start")
     
 def classic_mode_button_action():
     global is_portals
@@ -229,16 +241,33 @@ def back_button_action():
 back_button = Button.from_text(RESTART_SCREEN, "<-BACK", SMALL_MSG_FONT, pygame.Rect(50, 50, 80, 30), back_button_action)
 
 # Game Screen
-# TODO W ve S keylerini de mi image yapsak?
 up_arrow_key_img = pygame.image.load("resources\\pixel_art\\up_arrow.png").convert_alpha()
 down_arrow_key_img = pygame.image.load("resources\\pixel_art\\down_arrow.png").convert_alpha()
+up_arrow_key_img = pygame.transform.scale_by(up_arrow_key_img, 0.08)
+down_arrow_key_img = pygame.transform.scale_by(down_arrow_key_img, 0.08)
 
-w_key = Rectangle.from_text(GAME_SCREEN, SMALL_MSG_FONT, "W", 100, 5, "black", False, "white")
-s_key = Rectangle.from_text(GAME_SCREEN, SMALL_MSG_FONT, "S", w_key.rect.left, w_key.rect.bottom + 1, "black", False, "white")
-up_arrow_key = Rectangle.from_image(GAME_SCREEN, up_arrow_key_img, pygame.Rect(SCREEN_WIDTH - 100, w_key.rect.top, w_key.rect.width, w_key.rect.height), False)
-down_arrow_key = Rectangle.from_image(GAME_SCREEN, down_arrow_key_img, pygame.Rect(up_arrow_key.rect.left, up_arrow_key.rect.bottom + 1, w_key.rect.width, w_key.rect.height), False)
+w_key = Rectangle.from_rect(GAME_SCREEN, SMALL_MSG_FONT, "W", pygame.Rect(100, 5, 20, 20), "black", None, None, "white")
+s_key = Rectangle.from_rect(GAME_SCREEN, SMALL_MSG_FONT, "S", pygame.Rect(w_key.rect.left, w_key.rect.bottom + 1, w_key.rect.width, w_key.rect.height), "black", None, None, "white")
+up_arrow_key = Rectangle.from_image(GAME_SCREEN, up_arrow_key_img, pygame.Rect(SCREEN_WIDTH - 100, w_key.rect.top, w_key.rect.width, w_key.rect.height))
+down_arrow_key = Rectangle.from_image(GAME_SCREEN, down_arrow_key_img, pygame.Rect(up_arrow_key.rect.left, up_arrow_key.rect.bottom + 1, w_key.rect.width, w_key.rect.height))
 control_button_assist_keys = [w_key, s_key, up_arrow_key, down_arrow_key]
 assist_keys_display_time = None
+
+def display_control_assist():
+    global assist_keys_display_time
+    if assist_keys_display_time == None:
+        assist_keys_display_time = pygame.time.get_ticks()
+    if pygame.time.get_ticks() - assist_keys_display_time < 2500:
+        w_key.change_outline("red", 2)
+        up_arrow_key.change_outline("red", 2)
+    else:
+        w_key.change_outline("white", 2)
+        s_key.change_outline("red", 2)
+        up_arrow_key.change_outline(None)
+        down_arrow_key.change_outline("red", 2)
+    for key in control_button_assist_keys:
+        key.display(screen)
+
 # Game
 ball = Ball()
 player1 = Player(1)
@@ -284,13 +313,13 @@ while True:
                 if game_mode_selected:
                     game_active = True
                     if is_multiplayer:
-                        win_msg.update_text(MSG_FONT, "P1 WIN", "green")
-                        loss_msg.update_text(MSG_FONT, "P2 WIN", "blue")
+                        win_msg.change_text(MSG_FONT, "P1 WIN", "green")
+                        loss_msg.change_text(MSG_FONT, "P2 WIN", "blue")
                     else:
-                        win_msg.update_text(MSG_FONT, "YOU WIN", "green")
-                        loss_msg.update_text(MSG_FONT, "YOU LOSE", "red")
+                        win_msg.change_text(MSG_FONT, "YOU WIN", "green")
+                        loss_msg.change_text(MSG_FONT, "YOU LOSE", "red")
                 else:
-                    title_msg.update_text(MSG_FONT, "Select a game mode", "red")                        
+                    title_msg.change_text(MSG_FONT, "Select a game mode", "red")                        
     if game_active:
         current_screen = GAME_SCREEN
         if is_multiplayer:

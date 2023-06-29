@@ -1,5 +1,5 @@
 import pygame
-from constants import TITLE_SCREEN, RESTART_SCREEN
+from constants import TITLE_SCREEN, RESTART_SCREEN, HIGHLIGHT_COLOR
 
 def is_mouse_in_rect(rect, mouse_x, mouse_y):
         return rect.left <= mouse_x <= rect.right and rect.top <= mouse_y <= rect.bottom
@@ -39,7 +39,7 @@ class Button:
     def display(self, screen):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if is_mouse_in_rect(self.rect, mouse_x, mouse_y) or self.is_pressed:
-            pygame.draw.rect(screen, "#4B0082", self.rect)
+            pygame.draw.rect(screen, HIGHLIGHT_COLOR, self.rect)
         elif self.background_color == 1:
             pygame.draw.rect(screen, "white", self.rect)
         else:
