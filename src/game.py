@@ -124,6 +124,7 @@ def game_over():
     score_to_win = 3
     is_portals = False
     assist_keys_display_time = None
+
     set_restart_screen()
     if is_multiplayer:
         reset_components(ball.ball_sg, multiplayer_g, Portal.portals_g)
@@ -325,6 +326,16 @@ def display_control_assist():
         s_key.display(screen)
     up_arrow_key.display(screen)
     down_arrow_key.display(screen)
+
+home_img = pygame.image.load("resources\pixel_art\home_icon.png").convert_alpha()
+home_img = pygame.transform.scale_by(home_img, 0.15)
+
+def home_button_action():
+    back_button_action()
+    home_button.release()
+    
+home_button = Button.from_image(GAME_SCREEN, home_img, create_rect(SCREEN_WIDTH/2, SCORE_HEIGHT/2, home_img.get_width(), home_img.get_height()), home_button_action)
+
 
 # Game
 ball = Ball()
