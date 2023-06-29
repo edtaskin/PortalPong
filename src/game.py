@@ -333,9 +333,8 @@ home_img = pygame.transform.scale_by(home_img, 0.15)
 def home_button_action():
     back_button_action()
     home_button.release()
-    
-home_button = Button.from_image(GAME_SCREEN, home_img, create_rect(SCREEN_WIDTH/2, SCORE_HEIGHT/2, home_img.get_width(), home_img.get_height()), home_button_action)
 
+home_button = Button.from_image(GAME_SCREEN, home_img, create_rect(SCREEN_WIDTH/2, SCORE_HEIGHT/2, home_img.get_width(), home_img.get_height()), home_button_action)
 
 # Game
 ball = Ball()
