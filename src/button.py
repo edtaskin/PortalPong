@@ -10,13 +10,15 @@ class Button:
     restart_screen_buttons = []
     game_screen_buttons = []
 
-    def __init__(self, display_screen, content, rect, action, background_color=0):
+    def __init__(self, display_screen, content, rect, action, outline_color="white", background_color="black"):
         self.content = content
         self.display_screen = display_screen
         self.rect = rect
         self.is_pressed = False
         self.action = action
+        self.outline_color = outline_color
         self.background_color = background_color
+        self.is_visible = True
         Button.buttons.append(self)
         if not type(self.display_screen) == list:
             screens = [self.display_screen]
@@ -29,20 +31,33 @@ class Button:
                     Button.game_screen_buttons.append(self)
 
     @classmethod
-    def from_image(cls, display_screen, img, rect, action):
-        return cls(display_screen, img, rect, action)
+    def from_image(cls, display_screen, img, rect, action, outline_color="white"):
+        return cls(display_screen, img, rect, action, outline_color)
 
     @classmethod
-    def from_text(cls, display_screen, txt, font, rect, action, txt_color="white", background_color=0):
-        return cls(display_screen, font.render(txt, False, txt_color), rect, action, background_color)
+    def from_text(cls, display_screen, txt, font, rect, action, txt_color="white", outline_color="white", background_color="black"):
+        return cls(display_screen, font.render(txt, False, txt_color), rect, action, outline_color, background_color)
     
+    def press(self):
+        self.is_pressed = True
+        self.background_color = HIGHLIGHT_COLOR
+
+    def release(self):
+        self.is_pressed = False
+        self.background_color = "black"
+
+    def set_visibility(self, is_visible):
+        self.is_visible = is_visible
+
     def display(self, screen):
+        if not self.is_visible:
+            return
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        if is_mouse_in_rect(self.rect, mouse_x, mouse_y) or self.is_pressed:
+        if is_mouse_in_rect(self.rect, mouse_x, mouse_y):
             pygame.draw.rect(screen, HIGHLIGHT_COLOR, self.rect)
-        elif self.background_color == 1:
-            pygame.draw.rect(screen, "white", self.rect)
         else:
-            pygame.draw.rect(screen, "white", self.rect, 1)
+            pygame.draw.rect(screen, self.background_color, self.rect)
+        if self.outline_color != None:
+            pygame.draw.rect(screen, self.outline_color, self.rect, 1)
         screen.blit(self.content, self.rect)
 

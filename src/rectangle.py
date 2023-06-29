@@ -11,6 +11,7 @@ class Rectangle:
         self.outline_color = outline_color
         self.outline_width = outline_width
         self.background_color = background_color
+        self.is_visible = True
         Rectangle.rectangles.append(self)
         if display_screen == TITLE_SCREEN:
             Rectangle.title_screen_rectangles.append(self)
@@ -36,9 +37,15 @@ class Rectangle:
         self.outline_color = outline_color
         self.outline_width =outline_width
 
+    def set_visibility(self, is_visible):
+        self.is_visible = is_visible
+
     def display(self, screen):
+        if not self.is_visible:
+            return
         if self.background_color != None:
             pygame.draw.rect(screen, self.background_color, self.rect)
         if self.outline_color != None and self.outline_width != None:
             pygame.draw.rect(screen, self.outline_color, self.rect, self.outline_width)
-        screen.blit(self.content, self.rect)
+        if self.content != None:
+            screen.blit(self.content, self.rect)
