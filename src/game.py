@@ -210,7 +210,7 @@ def multiplayer_button_action():
     reset_group_of_buttons(player_count_buttons)
     is_multiplayer = button is multiplayer_button
 
-player_count_msg = Rectangle.from_text(TITLE_SCREEN, SMALL_MSG_FONT, "Player count:", classic_mode_button.rect.left, SCREEN_HEIGHT/2 + 25)
+player_count_msg = Rectangle.from_text(TITLE_SCREEN, SMALL_MSG_FONT, "Player count:", game_mode_msg.rect.centerx, SCREEN_HEIGHT/2 + 25)
 
 singleplayer_button = Button.from_text(TITLE_SCREEN, "1P", MSG_FONT, pygame.Rect(classic_mode_button.rect.centerx, player_count_msg.rect.centery -25, 50, 50), lambda: reset_group_of_buttons(player_count_buttons))
 singleplayer_button.is_pressed = True    
@@ -222,7 +222,7 @@ def score_to_win_button_action(score):
     reset_group_of_buttons(score_to_win_buttons)
     score_to_win = score
 
-score_to_win_msg = Rectangle.from_text(TITLE_SCREEN, SMALL_MSG_FONT, "Score to win:", classic_mode_button.rect.left, 3*SCREEN_HEIGHT/4) # TODO midright = (classic_mode_button.rect.left, 3*SCREEN_HEIGHT/4)
+score_to_win_msg = Rectangle.from_text(TITLE_SCREEN, SMALL_MSG_FONT, "Score to win:", game_mode_msg.rect.centerx, 3*SCREEN_HEIGHT/4)
 
 score_to_win_buttons = []
 score_to_win_buttons.append(Button.from_text(TITLE_SCREEN, "3", MSG_FONT, pygame.Rect(classic_mode_button.rect.centerx, score_to_win_msg.rect.centery - 25, 50, 50), lambda: score_to_win_button_action(3)))
