@@ -23,6 +23,10 @@ class Rectangle:
         rect = content.get_rect(center = (centerx, centery))
         return cls(display_screen, content, rect, outline)
     
+    @classmethod
+    def from_rect(cls, display_screen, content, rect, outline=False):
+        return cls(display_screen, content, rect, outline)
+
     def update_text(self, font, new_txt, color="white"):
         self.content = font.render(new_txt, False, color)
 
