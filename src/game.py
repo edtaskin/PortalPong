@@ -43,6 +43,9 @@ def set_game_screen(p1, p2):
                 pygame.draw.rect(screen, portal.color, portal.rect2)  
     pygame.draw.line(screen, "White", (SCREEN_WIDTH/2, SCORE_HEIGHT), (SCREEN_WIDTH/2, SCREEN_HEIGHT))
     pygame.draw.line(screen, "White", (0,SCORE_HEIGHT), (SCREEN_WIDTH,SCORE_HEIGHT), 2)
+    if assist_keys_display_time == None or assist_keys_display_time - pygame.time.get_ticks() <= 5000:
+        for rect in control_button_assist_keys:
+            rect.display(screen)
 
 def sprite_collision(ball_group, player_group, portal_group):
     for ball in ball_group:
@@ -225,6 +228,17 @@ def back_button_action():
 
 back_button = Button.from_text(RESTART_SCREEN, "<-BACK", SMALL_MSG_FONT, pygame.Rect(50, 50, 80, 30), back_button_action)
 
+# Game Screen
+# TODO W ve S keylerini de mi image yapsak?
+up_arrow_key_img = pygame.image.load("resources\\pixel_art\\up_arrow.png").convert_alpha()
+down_arrow_key_img = pygame.image.load("resources\\pixel_art\\down_arrow.png").convert_alpha()
+
+w_key = Rectangle.from_text(GAME_SCREEN, SMALL_MSG_FONT, "W", 100, 5, "black", False, "white")
+s_key = Rectangle.from_text(GAME_SCREEN, SMALL_MSG_FONT, "S", w_key.rect.left, w_key.rect.bottom + 1, "black", False, "white")
+up_arrow_key = Rectangle.from_image(GAME_SCREEN, up_arrow_key_img, pygame.Rect(SCREEN_WIDTH - 100, w_key.rect.top, w_key.rect.width, w_key.rect.height), False)
+down_arrow_key = Rectangle.from_image(GAME_SCREEN, down_arrow_key_img, pygame.Rect(up_arrow_key.rect.left, up_arrow_key.rect.bottom + 1, w_key.rect.width, w_key.rect.height), False)
+control_button_assist_keys = [w_key, s_key, up_arrow_key, down_arrow_key]
+assist_keys_display_time = None
 # Game
 ball = Ball()
 player1 = Player(1)
