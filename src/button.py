@@ -40,7 +40,7 @@ class Button:
     
     def press(self):
         self.is_pressed = True
-        self.background_color = HIGHLIGHT_COLOR
+        self.background_color = FILL_COLOR
 
     def release(self):
         self.is_pressed = False
@@ -54,8 +54,8 @@ class Button:
             return
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if is_mouse_in_rect(self.rect, mouse_x, mouse_y) and not self.is_pressed:
-            pygame.draw.rect(screen, FILL_COLOR, self.rect)
-        else:
+            pygame.draw.rect(screen, HIGHLIGHT_COLOR, self.rect)
+        elif self.is_pressed:
             pygame.draw.rect(screen, self.background_color, self.rect)
         if self.outline_color != None:
             pygame.draw.rect(screen, self.outline_color, self.rect, 1)

@@ -12,10 +12,6 @@ def set_title_screen():
     screen.fill("Black")
     for rect in Rectangle.title_screen_rectangles:
         rect.display(screen)
-    if back_button.is_pressed:
-        singleplayer_button.press()    # Default options
-        score_to_win_buttons[0].press()
-        back_button.release()
     for button in Button.title_screen_buttons:
         button.display(screen)
   
@@ -115,21 +111,13 @@ def check_game_over(comp, player):
     elif player.score == score_to_win:
         p1_win = True
         game_over()
-
+    
 def game_over():
-    global is_game_over, game_mode_selected, is_multiplayer, score_to_win, is_portals, assist_keys_display_time
-    is_game_over = True
-    game_mode_selected = False
-    is_multiplayer = False # Revert back to default options
-    score_to_win = 3
-    is_portals = False
-    assist_keys_display_time = None
-
-    set_restart_screen()
-    if is_multiplayer:
+    if is_multiplayer: # TODO
         reset_components(ball.ball_sg, multiplayer_g, Portal.portals_g)
     else:
         reset_components(ball.ball_sg, singleplayer_g, Portal.portals_g)
+    set_restart_screen()
 
 def update_components(ball_g, player_g, portals_g):
     for ball in ball_g:
@@ -140,7 +128,7 @@ def update_components(ball_g, player_g, portals_g):
         portal.update(pygame.time.get_ticks())
 
 def reset_components(ball_g, player_g, portals_g):
-    global game_active, player_win
+    global game_active, player_win, is_game_over, game_mode_selected, is_multiplayer, score_to_win, is_portals, assist_keys_display_time
     for ball in ball_g:
         ball.reset()
     for player in player_g:
@@ -148,15 +136,20 @@ def reset_components(ball_g, player_g, portals_g):
     portals_g.empty()
     player_win = None
     game_active = False
-    reset_all_buttons()
-
-def reset_all_buttons():
-    for button in Button.buttons:
-        button.release()
+    is_game_over = True
+    game_mode_selected = False
+    is_multiplayer = False # Revert back to default options
+    score_to_win = 3
+    is_portals = False
+    assist_keys_display_time = None
 
 def reset_group_of_buttons(buttons):
     for button in buttons:
         button.release()
+    if buttons == title_screen_buttons:
+        singleplayer_button.press()    # Default options
+        score_to_win_buttons[0].press()
+        back_button.release()
 
 # TODO Can it be used anywhere else?
 def create_rect(centerx, centery, width, height):
@@ -291,6 +284,7 @@ def back_button_action():
     global game_active, is_game_over
     game_active = False
     is_game_over = False
+    reset_group_of_buttons(title_screen_buttons)
 
 back_button = Button.from_text(RESTART_SCREEN, "<-BACK", SMALL_MSG_FONT, pygame.Rect(50, 50, 80, 30), back_button_action)
 
@@ -333,6 +327,7 @@ home_img = pygame.transform.scale_by(home_img, 0.15)
 def home_button_action():
     back_button_action()
     home_button.release()
+    reset_group_of_buttons(title_screen_buttons)
 
 home_button = Button.from_image(GAME_SCREEN, home_img, create_rect(SCREEN_WIDTH/2, SCORE_HEIGHT/2, home_img.get_width(), home_img.get_height()), home_button_action)
 
