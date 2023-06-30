@@ -113,10 +113,7 @@ def check_game_over(comp, player):
         game_over()
     
 def game_over():
-    if is_multiplayer: # TODO
-        reset_components(ball.ball_sg, multiplayer_g, Portal.portals_g)
-    else:
-        reset_components(ball.ball_sg, singleplayer_g, Portal.portals_g)
+    reset_components()
     set_restart_screen()
 
 def update_components(ball_g, player_g, portals_g):
@@ -127,13 +124,14 @@ def update_components(ball_g, player_g, portals_g):
     for portal in portals_g:
         portal.update(pygame.time.get_ticks())
 
-def reset_components(ball_g, player_g, portals_g):
+def reset_components():
     global game_active, player_win, is_game_over, game_mode_selected, is_multiplayer, score_to_win, is_portals, assist_keys_display_time
-    for ball in ball_g:
+    player_g = multiplayer_g if is_multiplayer else singleplayer_g
+    for ball in Ball.ball_sg:
         ball.reset()
     for player in player_g:
         player.reset()
-    portals_g.empty()
+    Portal.portals_g.empty()
     player_win = None
     game_active = False
     is_game_over = True
@@ -283,6 +281,7 @@ def back_button_action():
     game_active = False
     is_game_over = False
     reset_group_of_buttons(title_screen_buttons)
+    back_button.release()
 
 back_button = Button.from_text(RESTART_SCREEN, "<-BACK", SMALL_MSG_FONT, pygame.Rect(50, 50, 80, 30), back_button_action)
 
@@ -323,8 +322,11 @@ home_img = pygame.image.load("resources\pixel_art\home_icon.png").convert_alpha(
 home_img = pygame.transform.scale_by(home_img, 0.15)
 
 def home_button_action():
-    back_button_action()
+    global game_active, is_game_over
     home_button.release()
+    reset_components()
+    game_active = False
+    is_game_over = False
     reset_group_of_buttons(title_screen_buttons)
 
 home_button = Button.from_image(GAME_SCREEN, home_img, create_rect(SCREEN_WIDTH/2, SCORE_HEIGHT/2, home_img.get_width(), home_img.get_height()), home_button_action)
