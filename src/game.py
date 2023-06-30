@@ -323,7 +323,6 @@ home_img = pygame.transform.scale_by(home_img, 0.15)
 
 def home_button_action():
     global game_active, is_game_over
-    home_button.release()
     reset_components()
     game_active = False
     is_game_over = False
@@ -367,7 +366,7 @@ while True:
             for button in Button.buttons:
                 if button.rect.collidepoint(event.pos):
                     button.action()
-                    if button is not settings_button:
+                    if button is not settings_button or button is not home_button:
                         button.press()
                     if button is music_button:
                         if play_music:
@@ -378,7 +377,7 @@ while True:
 
         if is_portals and event.type == portal_timer:
             portal = Portal(pygame.time.get_ticks())
-            pygame.time.set_timer(portal_timer, randint(2000, 7000))
+            pygame.time.set_timer(portal_timer, choice([2000, 3000, 4000, 5000, 6000, 7000]))
         
         if not game_active:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
