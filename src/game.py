@@ -206,13 +206,11 @@ def game_mode_button_action():
 def classic_mode_button_action():
     global is_portals
     game_mode_button_action()
-    classic_mode_button.press()
     is_portals = False
 
 def portals_mode_button_action():
     global is_portals
     game_mode_button_action()
-    portals_mode_button.press()
     is_portals = True
     pygame.time.set_timer(portal_timer, 5000)
 
@@ -361,9 +359,16 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN:
             for button in Button.buttons:
                 if button.rect.collidepoint(event.pos):
-                    button.press()
                     button.action()
-        
+                    if button is not settings_button:
+                        button.press()
+                    if button is music_button:
+                        if play_music:
+                            button.release()
+                    elif button is sound_fx_button:
+                        if play_fx:
+                            button.release()
+
         if is_portals and event.type == portal_timer:
             portal = Portal(pygame.time.get_ticks())
             pygame.time.set_timer(portal_timer, randint(2000, 7000))
