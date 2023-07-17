@@ -1,4 +1,4 @@
-# Pong
+# PortalPong
 
 https://github.com/edtaskin/Pong/assets/91011207/4505e877-5cec-4236-82d4-7446fc572102
 
