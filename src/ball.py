@@ -2,6 +2,9 @@ import pygame
 from constants import *
 from random import choice
 
+MIN_BALL_SPEED = 6
+MAX_BALL_SPEED = 9
+
 class Ball(pygame.sprite.Sprite):
     ball_sg = pygame.sprite.GroupSingle()
     def __init__(self):

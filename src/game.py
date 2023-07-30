@@ -7,6 +7,7 @@ from rectangle import Rectangle
 from constants import *
 from sys import exit
 from random import randint, choice
+from rectUtilities import create_rect
 
 def set_title_screen():
     screen.fill("Black")
@@ -50,6 +51,9 @@ def set_game_screen(p1, p2):
                 pygame.draw.rect(screen, portal.color, portal.rect1)
             if portal.rect2 != None:
                 pygame.draw.rect(screen, portal.color, portal.rect2)  
+            if portal.consumed:
+                for rect in portal.sprinkles:
+                    pygame.draw.rect(screen, portal.color, rect)
     
     pygame.draw.line(screen, "white", (SCREEN_WIDTH/2, SCORE_HEIGHT), (SCREEN_WIDTH/2, SCREEN_HEIGHT))
     pygame.draw.line(screen, "white", (0,SCORE_HEIGHT), (SCREEN_WIDTH,SCORE_HEIGHT), 2)
@@ -139,12 +143,6 @@ def reset_group_of_buttons(buttons):
         singleplayer_button.press()    # Default options
         score_to_win_buttons[0].press()
         back_button.release()
-
-# TODO Can it be used anywhere else?
-def create_rect(centerx, centery, width, height):
-    rect = pygame.Rect(0, 0, width, height)
-    rect.center = (centerx, centery)
-    return rect
 
 def play_sound_fx(fx, stop_at=None):
     if play_fx:
@@ -258,10 +256,12 @@ settings_button = Button.from_image(TITLE_SCREEN, settings_icon, pygame.Rect(SCR
 
 music_icon = pygame.image.load("resources\\pixel_art\\music_icon.png").convert_alpha()
 music_icon = pygame.transform.scale_by(music_icon, 1/6)
-music_button = Button.from_image(TITLE_SCREEN, music_icon, create_rect(settings_button.rect.centerx, settings_button.rect.centery + 70, music_icon.get_width(), music_icon.get_height()), music_button_action)
+music_button = Button.from_image(TITLE_SCREEN, music_icon, create_rect(
+    settings_button.rect.centerx, settings_button.rect.centery + 70, music_icon.get_width(), music_icon.get_height()), music_button_action)
 music_button.set_visibility(False)
 
-sound_fx_button = Button.from_text(TITLE_SCREEN, "Fx", MSG_FONT, create_rect(settings_button.rect.centerx, music_button.rect.centery + 70, music_icon.get_width(), music_icon.get_height()), sound_fx_button_action)
+sound_fx_button = Button.from_text(TITLE_SCREEN, "Fx", MSG_FONT, create_rect(
+    settings_button.rect.centerx, music_button.rect.centery + 70, music_icon.get_width(), music_icon.get_height()), sound_fx_button_action)
 sound_fx_button.set_visibility(False)
 
 settings_rect = Rectangle(TITLE_SCREEN, None, create_rect(settings_button.rect.centerx, (music_button.rect.centerx + sound_fx_button.rect.centerx)/2, settings_button.rect.width, music_button.rect.height + sound_fx_button.rect.height + 10), None, None, "red")
