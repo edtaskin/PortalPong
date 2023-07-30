@@ -25,7 +25,7 @@ class Portal(pygame.sprite.Sprite):
     def isHit(self, ball):
         return ball.rect.colliderect(self.rect1) or ball.rect.colliderect(self.rect2)
     
-    def hit(self, ball):
+    def hit(self, ball, current_time):
         self.consumed = True
         if ball.rect.colliderect(self.rect1):
             ball.rect.x = self.rect2.x
@@ -37,6 +37,7 @@ class Portal(pygame.sprite.Sprite):
             ball.rect.y = self.rect1.y 
             self.play_animation(self.rect2)
             self.rect2 = None
+        self.creation_time = current_time
         self.duration = ANIMATION_DURATION
 
     def update(self, current_time):

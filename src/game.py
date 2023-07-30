@@ -1,6 +1,6 @@
 import pygame
 from ball import Ball 
-from paddle import Paddle, Player, Computer 
+from paddle import Player, Computer 
 from portal import Portal 
 from button import Button
 from rectangle import Rectangle
@@ -70,7 +70,7 @@ def sprite_collision(ball_group, player_group, portal_group):
                 if portal.consumed:
                     continue
                 if portal.isHit(ball):
-                    portal.hit(ball)
+                    portal.hit(ball, pygame.time.get_ticks())
                     play_sound_fx(portal_fx)
 
 def update_score(ball, p1, p2):
