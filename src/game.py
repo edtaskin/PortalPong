@@ -51,7 +51,7 @@ def set_game_screen(p1, p2):
                 pygame.draw.rect(screen, portal.color, portal.rect1)
             if portal.rect2 != None:
                 pygame.draw.rect(screen, portal.color, portal.rect2)  
-            if play_fx and portal.consumed:
+            if play_fx and portal.is_consumed:
                 for rect in portal.sprinkles:
                     pygame.draw.rect(screen, portal.color, rect)
     
@@ -67,9 +67,9 @@ def sprite_collision(ball_group, player_group, portal_group):
                 ball.disable_reflections()
         if is_portals:
             for portal in portal_group:
-                if portal.consumed:
+                if portal.is_consumed():
                     continue
-                if portal.isHit(ball):
+                if portal.is_hit(ball):
                     portal.hit(ball, pygame.time.get_ticks())
                     play_sound_fx(portal_fx)
 

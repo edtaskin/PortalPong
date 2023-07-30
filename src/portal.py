@@ -7,6 +7,7 @@ PORTAL_SIZE = 50
 SPRINKLE_COUNT = 20
 SPRINKLE_SIZE = 5
 ANIMATION_DURATION = 3000
+UNHIT_PORTAL_DURATION = 1000
 
 class Portal(pygame.sprite.Sprite):
     portals_g = pygame.sprite.Group()
@@ -16,17 +17,21 @@ class Portal(pygame.sprite.Sprite):
         self.rect1 = create_rect(randint(200, SCREEN_WIDTH/2 - 30), randint(SCORE_HEIGHT + 30, SCREEN_HEIGHT - PORTAL_SIZE), PORTAL_SIZE, PORTAL_SIZE)
         self.rect2 = create_rect(randint(SCREEN_WIDTH/2 + 30, SCREEN_WIDTH - 200), randint(SCORE_HEIGHT + 30, SCREEN_HEIGHT - PORTAL_SIZE), PORTAL_SIZE, PORTAL_SIZE)
         self.sprinkles = [] # Store smaller rects for the animation
-        self.sprinkle_directions = []
-        self.consumed = False
-        self.creation_time = current_time
-        self.duration = randint(5000, 10000)
+        self._sprinkle_directions = []
+        self._consumed = False
+        self._creation_time = current_time
+        self._duration = randint(5000, 10000)
         Portal.portals_g.add(self)
 
-    def isHit(self, ball):
+    def is_consumed(self):
+        return self._consumed
+    
+
+    def is_hit(self, ball):
         return ball.rect.colliderect(self.rect1) or ball.rect.colliderect(self.rect2)
     
     def hit(self, ball, current_time):
-        self.consumed = True
+        self._consumed = True
         if ball.rect.colliderect(self.rect1):
             ball.rect.x = self.rect2.x
             ball.rect.y = self.rect2.y
@@ -37,14 +42,19 @@ class Portal(pygame.sprite.Sprite):
             ball.rect.y = self.rect1.y 
             self.play_animation(self.rect2)
             self.rect2 = None
-        self.creation_time = current_time
-        self.duration = ANIMATION_DURATION
+        self._creation_time = current_time
+        self._duration = ANIMATION_DURATION
 
     def update(self, current_time):
-        if current_time - self.creation_time >= self.duration:
+        if current_time - self._creation_time >= self._duration:
             Portal.portals_g.remove(self)
-        elif self.consumed:
-            for rect, dir in zip(self.sprinkles, self.sprinkle_directions):
+        elif self.is_consumed():
+            if current_time - self._creation_time >= UNHIT_PORTAL_DURATION:
+                if self.rect1 != None:
+                    self.rect1 = None
+                elif self.rect2 != None:
+                    self.rect2 = None
+            for rect, dir in zip(self.sprinkles, self._sprinkle_directions):
                 rect.x += dir[0]
                 rect.y += dir[1]
     
@@ -52,7 +62,7 @@ class Portal(pygame.sprite.Sprite):
         x, y = rect.x, rect.y
         for i in range(SPRINKLE_COUNT):
             self.sprinkles.append(create_rect(x, y, SPRINKLE_SIZE, SPRINKLE_SIZE))
-            self.sprinkle_directions.append((uniform(-3, 3), uniform(-3, 3)))
+            self._sprinkle_directions.append((uniform(-3, 3), uniform(-3, 3)))
         
 
 
