@@ -51,7 +51,7 @@ def set_game_screen(p1, p2):
                 pygame.draw.rect(screen, portal.color, portal.rect1)
             if portal.rect2 != None:
                 pygame.draw.rect(screen, portal.color, portal.rect2)  
-            if portal.consumed:
+            if play_fx and portal.consumed:
                 for rect in portal.sprinkles:
                     pygame.draw.rect(screen, portal.color, rect)
     
