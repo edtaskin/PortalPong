@@ -63,19 +63,10 @@ def sprite_collision(ball_group, player_group, portal_group):
                 ball.disable_reflections()
         if is_portals:
             for portal in portal_group:
-                if portal.rect1 == None or portal.rect2 == None:
+                if portal.consumed:
                     continue
-                if ball.rect.colliderect(portal.rect1):
-                    ball.rect.x = portal.rect2.x
-                    ball.rect.y = portal.rect2.y
-                    portal.rect1 = None
-                    portal.duration = 2000
-                    play_sound_fx(portal_fx)
-                elif ball.rect.colliderect(portal.rect2):
-                    ball.rect.x = portal.rect1.x
-                    ball.rect.y = portal.rect1.y 
-                    portal.rect2 = None
-                    portal.duration = 2000
+                if portal.isHit(ball):
+                    portal.hit(ball)
                     play_sound_fx(portal_fx)
 
 def update_score(ball, p1, p2):
