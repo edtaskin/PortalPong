@@ -193,7 +193,7 @@ def portals_mode_button_action():
     global is_portals
     game_mode_button_action()
     is_portals = True
-    pygame.time.set_timer(portal_timer, 5000)
+    pygame.time.set_timer(portal_timer, 3000)
 
 game_mode_msg = Rectangle.from_text(TITLE_SCREEN, SMALL_MSG_FONT, "Game mode:", title_msg.rect.left - 100, SCREEN_HEIGHT/2 - 75)
 
