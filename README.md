@@ -1,6 +1,6 @@
 # PortalPong
 
-https://github.com/edtaskin/Pong/assets/91011207/4505e877-5cec-4236-82d4-7446fc572102
+https://github.com/edtaskin/PortalPong/assets/91011207/4f57b124-e6b9-441f-9d06-bdbca7c4be51
 
 <br> Pong based game with multiple game modes created using PyGame. <br/> 
 
