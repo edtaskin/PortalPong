@@ -368,7 +368,7 @@ while True:
 
         if is_portals and event.type == portal_timer:
             portal = Portal(pygame.time.get_ticks())
-            pygame.time.set_timer(portal_timer, choice([2000, 3000, 4000, 5000, 6000, 7000]))
+            pygame.time.set_timer(portal_timer, choice([2000, 3000, 4000, 5000]))
         
         if not game_active:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
