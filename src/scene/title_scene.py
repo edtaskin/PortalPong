@@ -98,7 +98,7 @@ class TitleScene(Scene):
             
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for button in self.buttons:
-                    if button.rect.collidepoint(event.pos):
+                    if button.is_clicked(event):
                         if button is self.classic_mode_button:
                             self.classic_mode_button_action()
                         elif button is self.portals_mode_button:

@@ -34,9 +34,9 @@ class GameScene(Scene):
 
         home_img = pygame.image.load("resources\pixel_art\home_icon.png").convert_alpha()
         home_img = pygame.transform.scale_by(home_img, 0.15)
-        home_button = Button.from_image(SceneType.GAME_SCENE, home_img, create_rect(SCREEN_WIDTH/2, SCORE_HEIGHT/2, home_img.get_width(), home_img.get_height()), self.home_button_action)
+        self.home_button = Button.from_image(SceneType.GAME_SCENE, home_img, create_rect(SCREEN_WIDTH/2, SCORE_HEIGHT/2, home_img.get_width(), home_img.get_height()), self.home_button_action)
 
-        self._buttons = [home_button]
+        self._buttons = [self.home_button]
 
         self.ball = Ball()
         self.player1 = Player(1)
@@ -86,6 +86,12 @@ class GameScene(Scene):
             if event.type == game_state_manager.portal_timer and game_state_manager.is_portals:
                 game_state_manager.start_timer(game_state_manager.portal_timer, choice([2000, 3000, 4000, 5000]))
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                for button in self.buttons:
+                    if button.is_clicked(event):
+                        if button is self.home_button:
+                            return self.home_button_action()
+
         if game_state_manager.game_active:
             p1, p2 = self._get_players()
             self.update_score(self.ball, p1, p2)
@@ -117,6 +123,7 @@ class GameScene(Scene):
             self.s_key.display(screen)
         self.up_arrow_key.display(screen)
         self.down_arrow_key.display(screen)
+
 
     def home_button_action(self):
         self.reset_components()
