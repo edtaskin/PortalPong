@@ -21,6 +21,13 @@ class Ball(pygame.sprite.Sprite):
             self.velocity.y *= -1
     
     def update(self):
+        if self.in_cooldown:
+            if pygame.time.get_ticks() - self.start_cooldown_time >= BALL_RESET_COOLDOWN: 
+                self.in_cooldown = False
+                self.velocity = pygame.math.Vector2(MIN_BALL_SPEED * choice([-1,1]), MIN_BALL_SPEED * choice([-1,1]))
+            else:
+                return
+
         self.reflect_ball()
         self.rect.x += self.velocity.x
         self.rect.y += self.velocity.y
@@ -29,6 +36,7 @@ class Ball(pygame.sprite.Sprite):
             self.reflections_disabled_at = 0
     
     def reset(self):
+        print("here")
         self.rect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
         self.velocity = pygame.math.Vector2(MIN_BALL_SPEED * choice([-1,1]), MIN_BALL_SPEED * choice([-1,1]))
         self.speed = MIN_BALL_SPEED

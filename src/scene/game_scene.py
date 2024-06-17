@@ -61,7 +61,8 @@ class GameScene(Scene):
     
 
     def update(self):
-        pass
+        p1, p2 = self._get_players()
+        self.update_score(self.ball, p1, p2)
 
     def render(self, screen):
         p1, p2 = self._get_players()
@@ -189,34 +190,35 @@ class GameScene(Scene):
         p2_score_msg = MSG_FONT.render(str(p2.score), False, "green")
         screen.blit(p2_score_msg, p2_score_msg.get_rect(center = (SCREEN_WIDTH-25, SCORE_HEIGHT/2)))
 
+
     def update_score(self, ball, p1, p2):
+        # No goal scored
+        if ball.rect.x < SCREEN_WIDTH and ball.rect.x >= 0:
+            return 
+
         if ball.rect.x >= SCREEN_WIDTH:
             p1.score += 1
-            self.play_sound_fx(sound.goal_fx)
         elif ball.rect.x <= 0:
             p2.score += 1
-            self.play_sound_fx(sound.goal_fx)
-        else:
-            if not ball.in_cooldown: return
 
-        if ball.in_cooldown and pygame.time.get_ticks() - ball.start_cooldown_time >= BALL_RESET_COOLDOWN: 
-            ball.reset()
+        self.play_sound_fx(sound.goal_fx)
+        
+        # Ball enters cooldown state
+        ball.reset()
+        ball.in_cooldown = True
+        ball.velocity = pygame.math.Vector2(0,0)
+        ball.start_cooldown_time = pygame.time.get_ticks()
+        
+        self.check_game_over(p1, p2)
 
-        if not ball.in_cooldown:
-            ball.rect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
-            ball.velocity = pygame.math.Vector2(0,0)
-            ball.start_cooldown_time = pygame.time.get_ticks()
-            ball.in_cooldown = True
-            return self.check_game_over(p1, p2) 
 
     def check_game_over(self, comp, player):
         if comp.score < game_state_manager.score_to_win and player.score < game_state_manager.score_to_win:
-            return False
+            return
         
         game_state_manager.p1_win = player.score == game_state_manager.score_to_win
+        game_state_manager.is_game_over = True
         self.reset_components()
-        return SceneType.RESTART_SCENE
-
 
     def update_components(self):
         for ball in self.balls:
