@@ -5,7 +5,8 @@ def is_mouse_in_rect(rect, mouse_x, mouse_y):
         return rect.left <= mouse_x <= rect.right and rect.top <= mouse_y <= rect.bottom
 
 class Button:
-    def __init__(self, display_screen, content, rect, action, outline_color="white", background_color="black"):
+    def __init__(self, display_screen, content, rect, action, outline_color="white", background_color="black", text=None):
+        self.text = text
         self.content = content
         self.display_screen = display_screen
         self.rect = rect
@@ -20,8 +21,8 @@ class Button:
         return cls(display_screen, img, rect, action, outline_color)
 
     @classmethod
-    def from_text(cls, display_screen, txt, font, rect, action, txt_color="white", outline_color="white", background_color="black"):
-        return cls(display_screen, font.render(txt, False, txt_color), rect, action, outline_color, background_color)
+    def from_text(cls, display_screen, text, font, rect, action, text_color="white", outline_color="white", background_color="black"):
+        return cls(display_screen, font.render(text, False, text_color), rect, action, outline_color=outline_color, background_color=background_color, text=text)
     
     def press(self):
         self.is_pressed = True

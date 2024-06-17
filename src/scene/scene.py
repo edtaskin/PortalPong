@@ -21,16 +21,11 @@ class Scene(ABC):
 
     @abstractmethod
     def update(self):
-        """Updates the game states as per the game logic."""
+        """
+        Updates the game states as per the game logic.
+        """
         pass
 
     @abstractmethod
     def handle_events(self, events):
         pass
-    
-    # TODO: Del
-    def handle_button_click(self, click_pos):
-        for button in self.buttons:
-            if button.rect.collidepoint(click_pos):
-                    print("HEREEEEE")
-                    button.press()

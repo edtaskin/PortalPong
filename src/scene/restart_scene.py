@@ -8,7 +8,6 @@ from button import Button
 class RestartScene(Scene):
     def __init__(self):
         self.title = Rectangle.from_text(SceneType.TITLE_SCENE, TITLE_FONT, "Pong", SCREEN_WIDTH/2,80)
-        self.title_msg = Rectangle.from_text(SceneType.TITLE_SCENE, MSG_FONT, "Select a game mode", SCREEN_WIDTH/2, SCREEN_HEIGHT-50)
         self.loss_msg = Rectangle.from_text(SceneType.RESTART_SCENE, MSG_FONT, "YOU LOSE", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "red")
         self.win_msg = Rectangle.from_text(SceneType.RESTART_SCENE, MSG_FONT, "YOU WIN", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "green")
 
@@ -50,4 +49,4 @@ class RestartScene(Scene):
         game_state_manager.is_game_over = False
         #reset_group_of_buttons(title_screen_buttons)
         scene.back_button.release()
-        return SceneType.RESTART_SCENE
+        return SceneType.TITLE_SCENE

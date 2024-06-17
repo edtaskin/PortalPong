@@ -36,7 +36,6 @@ class Ball(pygame.sprite.Sprite):
             self.reflections_disabled_at = 0
     
     def reset(self):
-        print("here")
         self.rect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
         self.velocity = pygame.math.Vector2(MIN_BALL_SPEED * choice([-1,1]), MIN_BALL_SPEED * choice([-1,1]))
         self.speed = MIN_BALL_SPEED

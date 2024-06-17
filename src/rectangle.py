@@ -30,8 +30,8 @@ class Rectangle:
     def from_rect(cls, display_screen, font, msg, rect, color="white", outline_color=None, outline_width=None, background_color="black"):
         return cls(display_screen, font.render(msg, False, color), rect, outline_color, outline_width, background_color)
 
-    def change_text(self, font, new_txt, color="white"):
-        self.content = font.render(new_txt, False, color)
+    def change_text(self, font, new_text, color="white"):
+        self.content = font.render(new_text, False, color)
 
     def change_outline(self, outline_color, outline_width=None):
         self.outline_color = outline_color
