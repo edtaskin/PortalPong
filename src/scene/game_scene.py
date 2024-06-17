@@ -66,9 +66,7 @@ class GameScene(Scene):
     def render(self, screen):
         p1, p2 = self._get_players()
         self.set_game_screen(p1, p2, screen)
-        #self.update_score(self.ball, p1, p1)
-        #self.update_components()
-        #self.sprite_collision()
+        self._render_score(screen, p1, p2)
 
     def _get_players(self):
         if game_state_manager.is_multiplayer:
@@ -162,7 +160,7 @@ class GameScene(Scene):
                         pygame.draw.rect(screen, portal.color, rect)
         
         pygame.draw.line(screen, "white", (SCREEN_WIDTH/2, SCORE_HEIGHT), (SCREEN_WIDTH/2, SCREEN_HEIGHT))
-        pygame.draw.line(screen, "white", (0,SCORE_HEIGHT), (SCREEN_WIDTH,SCORE_HEIGHT), 2)
+        pygame.draw.line(screen, "white", (0, SCORE_HEIGHT), (SCREEN_WIDTH, SCORE_HEIGHT), 2)
 
 
     def sprite_collision(self):
@@ -185,13 +183,13 @@ class GameScene(Scene):
                     portal.hit(ball, pygame.time.get_ticks())
                     self.play_sound_fx(sound.portal_fx)
 
-
-    def update_score(self, ball, p1, p2):
+    def _render_score(self, screen, p1, p2):
         p1_score_msg = MSG_FONT.render(str(p1.score), False, "blue" if game_state_manager.is_multiplayer else "red")
         screen.blit(p1_score_msg, p1_score_msg.get_rect(center = (25, SCORE_HEIGHT/2)))
         p2_score_msg = MSG_FONT.render(str(p2.score), False, "green")
         screen.blit(p2_score_msg, p2_score_msg.get_rect(center = (SCREEN_WIDTH-25, SCORE_HEIGHT/2)))
-        
+
+    def update_score(self, ball, p1, p2):
         if ball.rect.x >= SCREEN_WIDTH:
             p1.score += 1
             self.play_sound_fx(sound.goal_fx)
