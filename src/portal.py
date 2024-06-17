@@ -10,7 +10,6 @@ ANIMATION_DURATION = 3000
 UNHIT_PORTAL_DURATION = 1000
 
 class Portal(pygame.sprite.Sprite):
-    portals_g = pygame.sprite.Group()
     def __init__(self, current_time):
         super().__init__()
         self.color = PORTAL_COLORS[choice([x for x in range(len(PORTAL_COLORS))])]
@@ -21,7 +20,6 @@ class Portal(pygame.sprite.Sprite):
         self._consumed = False
         self._creation_time = current_time
         self._duration = randint(5000, 10000)
-        Portal.portals_g.add(self)
 
     def is_consumed(self):
         return self._consumed

@@ -1,5 +1,5 @@
 import pygame
-from constants import TITLE_SCREEN
+from scene.scene_type import SceneType
 
 class Rectangle:
     rectangles = []
@@ -13,7 +13,7 @@ class Rectangle:
         self.background_color = background_color
         self.is_visible = True
         Rectangle.rectangles.append(self)
-        if display_screen == TITLE_SCREEN:
+        if display_screen == SceneType.TITLE_SCENE:
             Rectangle.title_screen_rectangles.append(self)
 
     @classmethod
