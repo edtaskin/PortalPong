@@ -24,6 +24,10 @@ class Portal(pygame.sprite.Sprite):
     def is_consumed(self):
         return self._consumed
     
+    def is_outdated(self):
+        current_time = pygame.time.get_ticks()
+        return current_time - self._creation_time >= self._duration
+    
 
     def is_hit(self, ball):
         return ball.rect.colliderect(self.rect1) or ball.rect.colliderect(self.rect2)
@@ -44,17 +48,17 @@ class Portal(pygame.sprite.Sprite):
         self._duration = ANIMATION_DURATION
 
     def update(self, current_time):
-        if current_time - self._creation_time >= self._duration:
-            Portal.portals_g.remove(self)
-        elif self.is_consumed():
-            if current_time - self._creation_time >= UNHIT_PORTAL_DURATION:
-                if self.rect1 != None:
-                    self.rect1 = None
-                elif self.rect2 != None:
-                    self.rect2 = None
-            for rect, dir in zip(self.sprinkles, self._sprinkle_directions):
-                rect.x += dir[0]
-                rect.y += dir[1]
+        if not self.is_consumed():
+            return
+        
+        if current_time - self._creation_time >= UNHIT_PORTAL_DURATION:
+            if self.rect1 != None:
+                self.rect1 = None
+            elif self.rect2 != None:
+                self.rect2 = None
+        for rect, dir in zip(self.sprinkles, self._sprinkle_directions):
+            rect.x += dir[0]
+            rect.y += dir[1]
     
     def play_animation(self, rect):
         x, y = rect.x, rect.y

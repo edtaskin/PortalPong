@@ -63,6 +63,7 @@ class GameScene(Scene):
     def update(self):
         p1, p2 = self._get_players()
         self.update_score(self.ball, p1, p2)
+        self.update_portals()
 
     def render(self, screen):
         p1, p2 = self._get_players()
@@ -83,6 +84,8 @@ class GameScene(Scene):
                 exit()
         
             if event.type == game_state_manager.portal_timer and game_state_manager.is_portals:
+                portal = Portal(pygame.time.get_ticks())
+                self.portals.add(portal)
                 game_state_manager.start_timer(game_state_manager.portal_timer, choice([2000, 3000, 4000, 5000]))
 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -210,6 +213,12 @@ class GameScene(Scene):
         ball.start_cooldown_time = pygame.time.get_ticks()
         
         self.check_game_over(p1, p2)
+
+
+    def update_portals(self):
+        for portal in self.portals:
+            if portal.is_outdated():
+                self.portals.remove(portal)
 
 
     def check_game_over(self, comp, player):
