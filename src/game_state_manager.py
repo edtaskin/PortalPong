@@ -4,6 +4,7 @@ class _GameStateManager:
     def __init__(self):
         self.set_default_settings()
 
+
     def set_default_settings(self):
         self.game_active = False
         self.is_game_over = False
@@ -14,10 +15,17 @@ class _GameStateManager:
         self.game_mode_selected = False
         self.player_count_selected = False
         self.p1_win = False
+        self.portal_timer = pygame.USEREVENT + 1
         self.play_music = True
         self.play_sound_fx = True
-        self.portal_timer = pygame.USEREVENT + 1
-    
+
+
+    def reset_game(self):
+        self.game_active = False
+        self.is_game_over = True
+        self.p1_win = None
+
+
     def start_timer(self, timer, duration):
         pygame.time.set_timer(timer, duration)
 

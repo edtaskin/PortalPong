@@ -27,7 +27,6 @@ class Button:
     def press(self):
         self.is_pressed = True
         self.background_color = FILL_COLOR
-        #self.action()
 
     def release(self):
         self.is_pressed = False

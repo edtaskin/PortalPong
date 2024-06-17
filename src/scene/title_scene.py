@@ -17,7 +17,6 @@ class TitleScene(Scene):
         self.portals_mode_button = Button.from_text(SceneType.TITLE_SCENE, "Portals", MSG_FONT, pygame.Rect(self.title_msg.rect.right - 150, self.game_mode_msg.rect.centery - 25, 150, 50), self.portals_mode_button_action)
         self.game_mode_buttons = [self.classic_mode_button, self.portals_mode_button]
 
-
         player_count_msg = Rectangle.from_text(SceneType.TITLE_SCENE, SMALL_MSG_FONT, "Player count:", self.game_mode_msg.rect.centerx, SCREEN_HEIGHT/2 + 25)
 
         self.singleplayer_button = Button.from_text(SceneType.TITLE_SCENE, "1P", MSG_FONT, pygame.Rect(self.classic_mode_button.rect.centerx, player_count_msg.rect.centery -25, 50, 50), self.singleplayer_button_action)
@@ -76,7 +75,7 @@ class TitleScene(Scene):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 if game_state_manager.game_mode_selected:
                     game_state_manager.game_active = True
-                    Button.reset_group_of_buttons(self.buttons)
+                    self._hide_settings()
                     return SceneType.GAME_SCENE
             
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -161,12 +160,21 @@ class TitleScene(Scene):
 
 
     def settings_button_action(self):
-        self.settings_button.press()
+        if self.settings_button.is_pressed:
+            self.settings_button.release()
+        else:   
+            self.settings_button.press()
         self.music_button.set_visibility(not self.music_button.is_visible)
         self.sound_fx_button.set_visibility(not self.sound_fx_button.is_visible)
         if self.music_button.is_visible:
-            self.settings_rect.set_visibility(True)
+            self.settings_rect.set_visibility(not self.settings_rect.is_visible)
+
+
+    def _hide_settings(self):
         self.settings_button.release()
+        self.music_button.set_visibility(False)
+        self.sound_fx_button.set_visibility(False)
+        self.settings_rect.set_visibility(False)
 
 
     def music_button_action(self):

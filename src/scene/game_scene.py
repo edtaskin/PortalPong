@@ -217,8 +217,9 @@ class GameScene(Scene):
             return
         
         game_state_manager.p1_win = player.score == game_state_manager.score_to_win
-        game_state_manager.is_game_over = True
+        game_state_manager.reset_game()
         self.reset_components()
+
 
     def update_components(self):
         for ball in self.balls:
@@ -240,11 +241,12 @@ class GameScene(Scene):
         self._reset_balls()
         self._reset_players()
         self.portals.empty()
-        game_state_manager.set_default_settings()
+
 
     def _reset_balls(self):
         for ball in self.balls:
             ball.reset()
+
 
     def _reset_players(self):
         for player in self.singleplayer_players:
