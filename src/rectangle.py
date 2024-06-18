@@ -2,9 +2,6 @@ import pygame
 from scene.scene_type import SceneType
 
 class Rectangle:
-    rectangles = []
-    title_screen_rectangles = []
-
     def __init__(self, display_screen, content, rect, outline_color=None, outline_width=None, background_color=None):
         self.content = content
         self.rect = rect
@@ -12,9 +9,6 @@ class Rectangle:
         self.outline_width = outline_width
         self.background_color = background_color
         self.is_visible = True
-        Rectangle.rectangles.append(self)
-        if display_screen == SceneType.TITLE_SCENE:
-            Rectangle.title_screen_rectangles.append(self)
 
     @classmethod
     def from_image(cls, display_screen, img, rect, outline_color = None, outline_width=None):

@@ -50,6 +50,7 @@ class TitleScene(Scene):
         self.settings_buttons = [self.settings_button, self.music_button, self.sound_fx_button]
 
         self._buttons = self.game_mode_buttons + self.player_count_buttons + list(self.score_to_win_buttons_dict.values()) + self.settings_buttons
+        self._rectangles = [self.title, self.title_msg, self.game_mode_msg, player_count_msg, score_to_win_msg, self.settings_rect]
 
     @property
     def scene_type(self):
@@ -101,7 +102,7 @@ class TitleScene(Scene):
 
     def _set_title_screen(self, screen):
         screen.fill("Black")
-        for rect in Rectangle.title_screen_rectangles:
+        for rect in self._rectangles:
             rect.display(screen)
 
         none_pressed = all(not button.is_pressed for button in self.buttons)
