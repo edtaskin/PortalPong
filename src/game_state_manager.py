@@ -21,9 +21,8 @@ class _GameStateManager:
 
 
     def reset_game(self):
-        self.game_active = False
-        self.is_game_over = True
-        self.p1_win = None
+        game_state_manager.game_active = False
+        game_state_manager.is_game_over = True
 
 
     def start_timer(self, timer, duration):

@@ -11,10 +11,6 @@ class RestartScene(Scene):
         self.loss_msg = Rectangle.from_text(SceneType.RESTART_SCENE, MSG_FONT, "YOU LOSE", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "red")
         self.win_msg = Rectangle.from_text(SceneType.RESTART_SCENE, MSG_FONT, "YOU WIN", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "green")
 
-        if game_state_manager.is_multiplayer:
-            self.win_msg.change_text(MSG_FONT, "P1 WIN", "green")
-            self.loss_msg.change_text(MSG_FONT, "P2 WIN", "blue")
-
         self.back_button = Button.from_text(SceneType.RESTART_SCENE, "<-BACK", SMALL_MSG_FONT, pygame.Rect(50, 50, 80, 30), RestartScene.back_button_action)
     
     @property
@@ -46,7 +42,14 @@ class RestartScene(Scene):
     def _set_restart_scene(self, screen):
         screen.fill("Black")
         self.title.display(screen)
-        
+
+        if game_state_manager.is_multiplayer:
+            self.win_msg.change_text(MSG_FONT, "P1 WIN", "blue")
+            self.loss_msg.change_text(MSG_FONT, "P2 WIN", "green")
+        else:
+            self.win_msg.change_text(MSG_FONT, "YOU WIN", "green")
+            self.loss_msg.change_text(MSG_FONT, "YOU LOSE", "red")
+
         if game_state_manager.p1_win:  
             self.win_msg.display(screen)
         else:       

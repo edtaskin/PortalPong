@@ -74,7 +74,7 @@ class GameScene(Scene):
         if game_state_manager.is_multiplayer:
             p1, p2 = self.player1, self.player2
         else:
-            p1, p2 = self.player1, self.comp
+            p1, p2 = self.comp, self.player1 
         return p1, p2
 
     def handle_events(self, events):
@@ -187,6 +187,7 @@ class GameScene(Scene):
                     portal.hit(ball, pygame.time.get_ticks())
                     self.play_sound_fx(sound.portal_fx)
 
+
     def _render_score(self, screen, p1, p2):
         p1_score_msg = MSG_FONT.render(str(p1.score), False, "blue" if game_state_manager.is_multiplayer else "red")
         screen.blit(p1_score_msg, p1_score_msg.get_rect(center = (25, SCORE_HEIGHT/2)))
@@ -225,7 +226,7 @@ class GameScene(Scene):
         if p1.score < game_state_manager.score_to_win and p2.score < game_state_manager.score_to_win:
             return
         
-        game_state_manager.p1_win = p1.score == game_state_manager.score_to_win
+        game_state_manager.p1_win = p2.score == game_state_manager.score_to_win
         game_state_manager.reset_game()
         self.reset_components()
 
