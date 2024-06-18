@@ -159,7 +159,7 @@ class GameScene(Scene):
                     pygame.draw.rect(screen, portal.color, portal.rect1)
                 if portal.rect2 != None:
                     pygame.draw.rect(screen, portal.color, portal.rect2)  
-                if game_state_manager.play_sound_fx and portal.is_consumed:
+                if portal.is_consumed:
                     for rect in portal.sprinkles:
                         pygame.draw.rect(screen, portal.color, rect)
         
@@ -221,11 +221,11 @@ class GameScene(Scene):
                 self.portals.remove(portal)
 
 
-    def check_game_over(self, comp, player):
-        if comp.score < game_state_manager.score_to_win and player.score < game_state_manager.score_to_win:
+    def check_game_over(self, p1, p2):
+        if p1.score < game_state_manager.score_to_win and p2.score < game_state_manager.score_to_win:
             return
         
-        game_state_manager.p1_win = player.score == game_state_manager.score_to_win
+        game_state_manager.p1_win = p1.score == game_state_manager.score_to_win
         game_state_manager.reset_game()
         self.reset_components()
 
