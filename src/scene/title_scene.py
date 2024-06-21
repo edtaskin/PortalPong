@@ -2,49 +2,49 @@ from constants import *
 from rectangle import Rectangle
 from .scene_type import SceneType
 from .scene import Scene
-from button import Button
+from sprite.button import Button
 from game_state_manager import game_state_manager
 from rectUtilities import create_rect
 import sound
 
 class TitleScene(Scene):
     def __init__(self):
-        self.title = Rectangle.from_text(SceneType.TITLE_SCENE, TITLE_FONT, "Pong", SCREEN_WIDTH/2,80)
-        self.title_msg = Rectangle.from_text(SceneType.TITLE_SCENE, MSG_FONT, "Select a game mode", SCREEN_WIDTH/2, SCREEN_HEIGHT-50)
-        self.game_mode_msg = Rectangle.from_text(SceneType.TITLE_SCENE, SMALL_MSG_FONT, "Game mode:", self.title_msg.rect.left - 100, SCREEN_HEIGHT/2 - 75)
+        self.title = Rectangle.from_text(TITLE_FONT, "Pong", SCREEN_WIDTH/2,80)
+        self.title_msg = Rectangle.from_text(MSG_FONT, "Select a game mode", SCREEN_WIDTH/2, SCREEN_HEIGHT-50)
+        self.game_mode_msg = Rectangle.from_text(SMALL_MSG_FONT, "Game mode:", self.title_msg.rect.left - 100, SCREEN_HEIGHT/2 - 75)
 
-        self.classic_mode_button = Button.from_text(SceneType.TITLE_SCENE, "Classic", MSG_FONT, pygame.Rect(self.title_msg.rect.left, self.game_mode_msg.rect.centery - 25, 150, 50), self.classic_mode_button_action)
-        self.portals_mode_button = Button.from_text(SceneType.TITLE_SCENE, "Portals", MSG_FONT, pygame.Rect(self.title_msg.rect.right - 150, self.game_mode_msg.rect.centery - 25, 150, 50), self.portals_mode_button_action)
+        self.classic_mode_button = Button.from_text("Classic", MSG_FONT, pygame.Rect(self.title_msg.rect.left, self.game_mode_msg.rect.centery - 25, 150, 50), self.classic_mode_button_action)
+        self.portals_mode_button = Button.from_text("Portals", MSG_FONT, pygame.Rect(self.title_msg.rect.right - 150, self.game_mode_msg.rect.centery - 25, 150, 50), self.portals_mode_button_action)
         self.game_mode_buttons = [self.classic_mode_button, self.portals_mode_button]
 
-        player_count_msg = Rectangle.from_text(SceneType.TITLE_SCENE, SMALL_MSG_FONT, "Player count:", self.game_mode_msg.rect.centerx, SCREEN_HEIGHT/2 + 25)
+        player_count_msg = Rectangle.from_text(SMALL_MSG_FONT, "Player count:", self.game_mode_msg.rect.centerx, SCREEN_HEIGHT/2 + 25)
 
-        self.singleplayer_button = Button.from_text(SceneType.TITLE_SCENE, "1P", MSG_FONT, pygame.Rect(self.classic_mode_button.rect.centerx, player_count_msg.rect.centery -25, 50, 50), self.singleplayer_button_action)
-        self.multiplayer_button = Button.from_text(SceneType.TITLE_SCENE, "2P", MSG_FONT, pygame.Rect(self.portals_mode_button.rect.centerx, player_count_msg.rect.centery - 25, 50, 50), self.multiplayer_button_action)
+        self.singleplayer_button = Button.from_text("1P", MSG_FONT, pygame.Rect(self.classic_mode_button.rect.centerx, player_count_msg.rect.centery -25, 50, 50), self.singleplayer_button_action)
+        self.multiplayer_button = Button.from_text("2P", MSG_FONT, pygame.Rect(self.portals_mode_button.rect.centerx, player_count_msg.rect.centery - 25, 50, 50), self.multiplayer_button_action)
         self.player_count_buttons = [self.singleplayer_button, self.multiplayer_button]
 
-        score_to_win_msg = Rectangle.from_text(SceneType.TITLE_SCENE, SMALL_MSG_FONT, "Score to win:", self.game_mode_msg.rect.centerx, 3*SCREEN_HEIGHT/4)
+        score_to_win_msg = Rectangle.from_text(SMALL_MSG_FONT, "Score to win:", self.game_mode_msg.rect.centerx, 3*SCREEN_HEIGHT/4)
 
         self.score_to_win_buttons_dict = {}
-        self.score_to_win_buttons_dict[3] = Button.from_text(SceneType.TITLE_SCENE, "3", MSG_FONT, pygame.Rect(self.classic_mode_button.rect.centerx, score_to_win_msg.rect.centery - 25, 50, 50), lambda: self.score_to_win_button_action(3))
-        self.score_to_win_buttons_dict[7] = Button.from_text(SceneType.TITLE_SCENE, "7", MSG_FONT, pygame.Rect(SCREEN_WIDTH/2, score_to_win_msg.rect.centery - 25, 50, 50), lambda: self.score_to_win_button_action(7))
-        self.score_to_win_buttons_dict[11] = Button.from_text(SceneType.TITLE_SCENE, "11", MSG_FONT, pygame.Rect(self.portals_mode_button.rect.centerx, score_to_win_msg.rect.centery - 25, 50, 50), lambda: self.score_to_win_button_action(11))
+        self.score_to_win_buttons_dict[3] = Button.from_text("3", MSG_FONT, pygame.Rect(self.classic_mode_button.rect.centerx, score_to_win_msg.rect.centery - 25, 50, 50), lambda: self.score_to_win_button_action(3))
+        self.score_to_win_buttons_dict[7] = Button.from_text("7", MSG_FONT, pygame.Rect(SCREEN_WIDTH/2, score_to_win_msg.rect.centery - 25, 50, 50), lambda: self.score_to_win_button_action(7))
+        self.score_to_win_buttons_dict[11] = Button.from_text("11", MSG_FONT, pygame.Rect(self.portals_mode_button.rect.centerx, score_to_win_msg.rect.centery - 25, 50, 50), lambda: self.score_to_win_button_action(11))
 
         settings_icon = pygame.image.load("resources\\pixel_art\\settings_icon.png").convert_alpha()
         settings_icon = pygame.transform.scale_by(settings_icon, 1/5)
-        self.settings_button = Button.from_image(SceneType.TITLE_SCENE, settings_icon, pygame.Rect(SCREEN_WIDTH-100, 25, settings_icon.get_width(), settings_icon.get_height()), self.settings_button_action)
+        self.settings_button = Button.from_image(settings_icon, pygame.Rect(SCREEN_WIDTH-100, 25, settings_icon.get_width(), settings_icon.get_height()), self.settings_button_action)
 
         music_icon = pygame.image.load("resources\\pixel_art\\music_icon.png").convert_alpha()
         music_icon = pygame.transform.scale_by(music_icon, 1/6)
-        self.music_button = Button.from_image(SceneType.TITLE_SCENE, music_icon, create_rect(
+        self.music_button = Button.from_image(music_icon, create_rect(
             self.settings_button.rect.centerx, self.settings_button.rect.centery + 70, music_icon.get_width(), music_icon.get_height()), self.music_button_action)
         self.music_button.set_visibility(False)
         
-        self.sound_fx_button = Button.from_text(SceneType.TITLE_SCENE, "Fx", MSG_FONT, create_rect(
+        self.sound_fx_button = Button.from_text("Fx", MSG_FONT, create_rect(
             self.settings_button.rect.centerx, self.music_button.rect.centery + 70, music_icon.get_width(), music_icon.get_height()), self.sound_fx_button_action)
         self.sound_fx_button.set_visibility(False)
 
-        self.settings_rect = Rectangle(SceneType.TITLE_SCENE, None, create_rect(self.settings_button.rect.centerx, (self.music_button.rect.centerx + self.sound_fx_button.rect.centerx)/2, self.settings_button.rect.width, self.music_button.rect.height + self.sound_fx_button.rect.height + 10), None, None, "red")
+        self.settings_rect = Rectangle(None, create_rect(self.settings_button.rect.centerx, (self.music_button.rect.centerx + self.sound_fx_button.rect.centerx)/2, self.settings_button.rect.width, self.music_button.rect.height + self.sound_fx_button.rect.height + 10), None, None, "red")
         self.settings_rect.set_visibility(False)
 
         self.settings_buttons = [self.settings_button, self.music_button, self.sound_fx_button]

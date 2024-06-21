@@ -3,15 +3,15 @@ from rectangle import Rectangle
 from .scene_type import SceneType
 from .scene import Scene
 from game_state_manager import game_state_manager
-from button import Button
+from sprite.button import Button
 
 class RestartScene(Scene):
     def __init__(self):
-        self.title = Rectangle.from_text(SceneType.RESTART_SCENE, TITLE_FONT, "Pong", SCREEN_WIDTH/2, 80)
-        self.loss_msg = Rectangle.from_text(SceneType.RESTART_SCENE, MSG_FONT, "YOU LOSE", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "red")
-        self.win_msg = Rectangle.from_text(SceneType.RESTART_SCENE, MSG_FONT, "YOU WIN", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "green")
+        self.title = Rectangle.from_text(TITLE_FONT, "Pong", SCREEN_WIDTH/2, 80)
+        self.loss_msg = Rectangle.from_text(MSG_FONT, "YOU LOSE", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "red")
+        self.win_msg = Rectangle.from_text(MSG_FONT, "YOU WIN", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "green")
 
-        self.back_button = Button.from_text(SceneType.RESTART_SCENE, "<-BACK", SMALL_MSG_FONT, pygame.Rect(50, 50, 80, 30), RestartScene.back_button_action)
+        self.back_button = Button.from_text("<-BACK", SMALL_MSG_FONT, pygame.Rect(50, 50, 80, 30), RestartScene.back_button_action)
     
     @property
     def scene_type(self):

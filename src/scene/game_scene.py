@@ -3,11 +3,11 @@ import pygame
 from rectangle import Rectangle
 from .scene_type import SceneType
 from constants import *
-from button import Button
-from ball import Ball
-from portal import Portal
+from sprite.button import Button
+from sprite.ball import Ball
+from sprite.portal import Portal
 from rectUtilities import create_rect
-from paddle import Player, Computer
+from sprite.paddle import Player, Computer
 from game_state_manager import game_state_manager
 from .scene_type import SceneType
 from random import choice
@@ -20,21 +20,21 @@ class GameScene(Scene):
         up_arrow_key_img = pygame.transform.scale_by(up_arrow_key_img, 0.08)
         down_arrow_key_img = pygame.transform.scale_by(down_arrow_key_img, 0.08)
 
-        self.w_key = Rectangle.from_rect(SceneType.GAME_SCENE, SMALL_MSG_FONT, "W", 
+        self.w_key = Rectangle.from_rect(SMALL_MSG_FONT, "W", 
                                          pygame.Rect(100, 5, 20, 20), 
                                          "black", None, None, "white")
-        self.s_key = Rectangle.from_rect(SceneType.GAME_SCENE, SMALL_MSG_FONT, "S", 
+        self.s_key = Rectangle.from_rect(SMALL_MSG_FONT, "S", 
                                          pygame.Rect(self.w_key.rect.left, self.w_key.rect.bottom + 1, self.w_key.rect.width, self.w_key.rect.height), 
                                          "black", None, None, "white")
-        self.up_arrow_key = Rectangle.from_image(SceneType.GAME_SCENE, up_arrow_key_img, 
+        self.up_arrow_key = Rectangle.from_image(up_arrow_key_img, 
                                                  pygame.Rect(SCREEN_WIDTH - 100, self.w_key.rect.top, self.w_key.rect.width, self.w_key.rect.height))
-        self.down_arrow_key = Rectangle.from_image(SceneType.GAME_SCENE, down_arrow_key_img, 
+        self.down_arrow_key = Rectangle.from_image(down_arrow_key_img, 
                                                    pygame.Rect(self.up_arrow_key.rect.left, self.up_arrow_key.rect.bottom + 1, self.w_key.rect.width, self.w_key.rect.height))
         self.assist_keys_display_time = None
 
         home_img = pygame.image.load("resources\pixel_art\home_icon.png").convert_alpha()
         home_img = pygame.transform.scale_by(home_img, 0.15)
-        self.home_button = Button.from_image(SceneType.GAME_SCENE, home_img, create_rect(SCREEN_WIDTH/2, SCORE_HEIGHT/2, home_img.get_width(), home_img.get_height()), self.home_button_action)
+        self.home_button = Button.from_image(home_img, create_rect(SCREEN_WIDTH/2, SCORE_HEIGHT/2, home_img.get_width(), home_img.get_height()), self.home_button_action)
 
         self._buttons = [self.home_button]
 
@@ -93,6 +93,13 @@ class GameScene(Scene):
                     if button.is_clicked(event):
                         if button is self.home_button:
                             return self.home_button_action()
+                        
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p:
+                    print("here")
+                    self.player1.change_speed(2)
+                elif event.key == pygame.K_l:
+                    self.player1.reset_speed()
 
         if game_state_manager.game_active:
             p1, p2 = self._get_players()

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from button import Button
+from sprite.button import Button
 from scene.scene_type import SceneType
 
 class Scene(ABC):

@@ -2,7 +2,7 @@ import pygame
 from scene.scene_type import SceneType
 
 class Rectangle:
-    def __init__(self, display_screen, content, rect, outline_color=None, outline_width=None, background_color=None):
+    def __init__(self, content, rect, outline_color=None, outline_width=None, background_color=None):
         self.content = content
         self.rect = rect
         self.outline_color = outline_color
@@ -11,18 +11,18 @@ class Rectangle:
         self.is_visible = True
 
     @classmethod
-    def from_image(cls, display_screen, img, rect, outline_color = None, outline_width=None):
-        return cls(display_screen, img, rect, outline_color, outline_width)
+    def from_image(cls, img, rect, outline_color = None, outline_width=None):
+        return cls(img, rect, outline_color, outline_width)
 
     @classmethod
-    def from_text(cls, display_screen, font, msg, centerx, centery, color="white", outline_color=None, outline_width=None):
+    def from_text(cls, font, msg, centerx, centery, color="white", outline_color=None, outline_width=None):
         content = font.render(msg, False, color)
         rect = content.get_rect(center = (centerx, centery))
-        return cls(display_screen, content, rect, outline_color, outline_width)
+        return cls(content, rect, outline_color, outline_width)
     
     @classmethod
-    def from_rect(cls, display_screen, font, msg, rect, color="white", outline_color=None, outline_width=None, background_color="black"):
-        return cls(display_screen, font.render(msg, False, color), rect, outline_color, outline_width, background_color)
+    def from_rect(cls, font, msg, rect, color="white", outline_color=None, outline_width=None, background_color="black"):
+        return cls(font.render(msg, False, color), rect, outline_color, outline_width, background_color)
 
     def change_text(self, font, new_text, color="white"):
         self.content = font.render(new_text, False, color)
