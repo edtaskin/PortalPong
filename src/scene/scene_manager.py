@@ -19,6 +19,8 @@ class SceneManager:
 
     def switch_to(self, scene_type):
         self.current_scene = self.scenes[scene_type]
+        print(self.current_scene.switched_to_scene_event)
+        pygame.event.post(pygame.event.Event(self.current_scene.switched_to_scene_event)) # Signal the scene that it's being switched to
     
     def update(self):
         self.current_scene.update()

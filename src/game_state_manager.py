@@ -15,9 +15,9 @@ class _GameStateManager:
         self.game_mode_selected = False
         self.player_count_selected = False
         self.p1_win = False
-        self.portal_timer = pygame.USEREVENT + 1
         self.play_music = True
         self.play_sound_fx = True
+        self._user_events = []
 
 
     def reset_game(self):
@@ -25,7 +25,10 @@ class _GameStateManager:
         game_state_manager.is_game_over = True
 
 
-    def start_timer(self, timer, duration):
-        pygame.time.set_timer(timer, duration)
+    def define_user_event(self):
+        user_events_count = len(self._user_events)
+        new_event = pygame.USEREVENT + (user_events_count + 1)
+        self._user_events.append(new_event)
+        return new_event
 
 game_state_manager = _GameStateManager()

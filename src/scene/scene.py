@@ -1,8 +1,12 @@
 from abc import ABC, abstractmethod
 from sprite.button import Button
 from scene.scene_type import SceneType
+from game_state_manager import game_state_manager
 
 class Scene(ABC):
+    def __init__(self):
+        self.switched_to_scene_event = game_state_manager.define_user_event()
+        
     @property
     @abstractmethod
     def scene_type(self) -> SceneType:

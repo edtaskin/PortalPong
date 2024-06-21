@@ -7,6 +7,7 @@ from sprite.button import Button
 
 class RestartScene(Scene):
     def __init__(self):
+        super().__init__()
         self.title = Rectangle.from_text(TITLE_FONT, "Pong", SCREEN_WIDTH/2, 80)
         self.loss_msg = Rectangle.from_text(MSG_FONT, "YOU LOSE", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "red")
         self.win_msg = Rectangle.from_text(MSG_FONT, "YOU WIN", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "green")

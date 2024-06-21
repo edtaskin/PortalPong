@@ -4,11 +4,12 @@ from .scene_type import SceneType
 from .scene import Scene
 from sprite.button import Button
 from game_state_manager import game_state_manager
-from rectUtilities import create_rect
+from util.rect_util import create_rect
 import sound
 
 class TitleScene(Scene):
     def __init__(self):
+        super().__init__()
         self.title = Rectangle.from_text(TITLE_FONT, "Pong", SCREEN_WIDTH/2,80)
         self.title_msg = Rectangle.from_text(MSG_FONT, "Select a game mode", SCREEN_WIDTH/2, SCREEN_HEIGHT-50)
         self.game_mode_msg = Rectangle.from_text(SMALL_MSG_FONT, "Game mode:", self.title_msg.rect.left - 100, SCREEN_HEIGHT/2 - 75)
@@ -139,7 +140,6 @@ class TitleScene(Scene):
         self.game_mode_button_action()
         self.portals_mode_button.press()
         game_state_manager.is_portals = True
-        game_state_manager.start_timer(game_state_manager.portal_timer, 3000)
 
 
     def singleplayer_button_action(self):

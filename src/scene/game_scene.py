@@ -6,15 +6,18 @@ from constants import *
 from sprite.button import Button
 from sprite.ball import Ball
 from sprite.portal import Portal
-from rectUtilities import create_rect
+from util.rect_util import create_rect
 from sprite.paddle import Player, Computer
 from game_state_manager import game_state_manager
 from .scene_type import SceneType
-from random import choice
+from random import randint, choice
 import sound
+from util.timer_util import start_timer
+from sprite.item_box import ItemBox
 
 class GameScene(Scene):
     def __init__(self) -> None:
+        super().__init__()
         up_arrow_key_img = pygame.image.load("resources\\pixel_art\\up_arrow.png").convert_alpha()
         down_arrow_key_img = pygame.image.load("resources\\pixel_art\\down_arrow.png").convert_alpha()
         up_arrow_key_img = pygame.transform.scale_by(up_arrow_key_img, 0.08)
@@ -50,6 +53,10 @@ class GameScene(Scene):
 
         self.balls = [self.ball]
         self.portals = pygame.sprite.Group()
+        self.portal_timer = game_state_manager.define_user_event()
+
+        self.item_boxes = pygame.sprite.Group()
+        self.item_box_timer = game_state_manager.define_user_event()
 
     @property
     def scene_type(self):
@@ -82,11 +89,21 @@ class GameScene(Scene):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+
+            if event.type == self.switched_to_scene_event:
+                if game_state_manager.is_portals:
+                    start_timer(self.portal_timer, choice([2000, 3000, 4000, 5000]))
+                    start_timer(self.item_box_timer, randint(5000, 10000))
         
-            if event.type == game_state_manager.portal_timer and game_state_manager.is_portals:
-                portal = Portal(pygame.time.get_ticks())
+            if event.type == self.portal_timer and game_state_manager.is_portals:
+                portal = Portal()
                 self.portals.add(portal)
-                game_state_manager.start_timer(game_state_manager.portal_timer, choice([2000, 3000, 4000, 5000]))
+                start_timer(self.portal_timer, choice([2000, 3000, 4000, 5000]))
+
+            if event.type == self.item_box_timer and game_state_manager.is_portals:
+                item_box = ItemBox()
+                self.item_boxes.add(item_box)
+                start_timer(self.item_box_timer, randint(5000, 10000))
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for button in self.buttons:
@@ -162,13 +179,10 @@ class GameScene(Scene):
 
         if game_state_manager.is_portals:
             for portal in self.portals:
-                if portal.rect1 != None:
-                    pygame.draw.rect(screen, portal.color, portal.rect1)
-                if portal.rect2 != None:
-                    pygame.draw.rect(screen, portal.color, portal.rect2)  
-                if portal.is_consumed:
-                    for rect in portal.sprinkles:
-                        pygame.draw.rect(screen, portal.color, rect)
+                portal.draw(screen)
+            
+            for item_box in self.item_boxes:
+                item_box.draw(screen)
         
         pygame.draw.line(screen, "white", (SCREEN_WIDTH/2, SCORE_HEIGHT), (SCREEN_WIDTH/2, SCREEN_HEIGHT))
         pygame.draw.line(screen, "white", (0, SCORE_HEIGHT), (SCREEN_WIDTH, SCORE_HEIGHT), 2)

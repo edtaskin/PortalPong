@@ -1,7 +1,7 @@
 import pygame
 from constants import *
 from random import randint, choice, uniform
-from rectUtilities import create_rect
+from util.rect_util import create_rect
 
 PORTAL_SIZE = 50
 SPRINKLE_COUNT = 20
@@ -10,7 +10,7 @@ ANIMATION_DURATION = 3000
 UNHIT_PORTAL_DURATION = 1000
 
 class Portal(pygame.sprite.Sprite):
-    def __init__(self, current_time):
+    def __init__(self):
         super().__init__()
         self.color = PORTAL_COLORS[choice([x for x in range(len(PORTAL_COLORS))])]
         self.rect1 = create_rect(randint(200, SCREEN_WIDTH/2 - 30), randint(SCORE_HEIGHT + 30, SCREEN_HEIGHT - PORTAL_SIZE), PORTAL_SIZE, PORTAL_SIZE)
@@ -18,8 +18,18 @@ class Portal(pygame.sprite.Sprite):
         self.sprinkles = [] # Store smaller rects for the animation
         self._sprinkle_directions = []
         self._consumed = False
-        self._creation_time = current_time
+        self._creation_time = pygame.time.get_ticks()
         self._duration = randint(5000, 10000)
+
+
+    def draw(self, screen):
+        if self.rect1 != None:
+            pygame.draw.rect(screen, self.color, self.rect1)
+        if self.rect2 != None:
+            pygame.draw.rect(screen, self.color, self.rect2)  
+        if self.is_consumed:
+            for rect in self.sprinkles:
+                pygame.draw.rect(screen, self.color, rect)
 
     def is_consumed(self):
         return self._consumed
